@@ -1,81 +1,50 @@
-<script setup>
-import HelloWorld from './components/HelloWorld.vue'
-import TheWelcome from './components/TheWelcome.vue'
-</script>
-
 <template>
-  <header>
-    <img alt="Vue logo" class="logo" src="./assets/logo.svg" width="125" height="125" />
-
-    <div class="wrapper">
-      <HelloWorld msg="You did it!" />
-    </div>
-  </header>
-
-  <main>
-    <TheWelcome />
-  </main>
+  <div>
+    <nav>
+      <router-link to="/"> Home </router-link> |
+      <span> 
+        <router-link to="/dashboard"> Dashboard </router-link> |
+      </span>
+      <span v-if="isLoggedIn"> 
+        <button @click="signOut"> Logout </button> 
+      </span>
+      <span v-else>
+        <router-link to="/register"> Register </router-link> |
+        <router-link to="/sign-in"> Login </router-link>
+      </span>
+    </nav>
+    <router-view />
+  </div>
 </template>
 
+<script setup>
+import { ref, watchEffect } from 'vue' // used for conditional rendering
+import  firebase from "firebase/compat/app"
+import 'firebase/compat/auth'
+import { useRouter } from 'vue-router'
+const router = useRouter()
+const isLoggedIn = ref(true)
+// runs after firebase is initialized
+firebase.auth().onAuthStateChanged(function(user) {
+    if (user) {
+      isLoggedIn.value = true // if we have a user
+    } else {
+      isLoggedIn.value = false // if we do not
+    }
+})
+const signOut = () => {
+  firebase.auth().signOut()
+  router.push('/')
+}
+</script>
+
 <style>
-@import './assets/base.css';
-
 #app {
-  max-width: 1280px;
-  margin: 0 auto;
-  padding: 2rem;
-
-  font-weight: normal;
-}
-
-header {
-  line-height: 1.5;
-}
-
-.logo {
-  display: block;
-  margin: 0 auto 2rem;
-}
-
-a,
-.green {
-  text-decoration: none;
-  color: hsla(160, 100%, 37%, 1);
-  transition: 0.4s;
-}
-
-@media (hover: hover) {
-  a:hover {
-    background-color: hsla(160, 100%, 37%, 0.2);
-  }
-}
-
-@media (min-width: 1024px) {
-  body {
-    display: flex;
-    place-items: center;
-  }
-
-  #app {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    padding: 0 2rem;
-  }
-
-  header {
-    display: flex;
-    place-items: center;
-    padding-right: calc(var(--section-gap) / 2);
-  }
-
-  header .wrapper {
-    display: flex;
-    place-items: flex-start;
-    flex-wrap: wrap;
-  }
-
-  .logo {
-    margin: 0 2rem 0 0;
-  }
+  font-family: Avenir, Helvetica, Arial, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-align: center;
+  color: #2c3e50;
+  margin-top: 60px;
 }
 </style>
