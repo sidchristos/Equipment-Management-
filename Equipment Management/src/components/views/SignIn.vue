@@ -3,24 +3,24 @@
     <p> <input type='text' placeholder="Email" v-model='email'/> </p>
     <p> <input type='password' placeholder="Password" v-model='password'/> </p>
     <p v-if="errMsg"> {{ errMsg }} </p>
-    <p> <button @click="signIn"> Submit </button> </p>
+    <p> <button @click="signIn" class='button'> Submit </button> </p>
 </template>
 
 <script setup>
 import { ref } from 'vue'
 import firebase from "firebase/compat/app";
-import { useRouter } from 'vue-router' // import router
+import { useRouter } from 'vue-router' 
 const email = ref('')
 const password = ref('')
-const errMsg = ref() // ERROR MESSAGE
-const router = useRouter() // get a reference to our vue router
-const signIn = () => { // we also renamed this method 
+const errMsg = ref() 
+const router = useRouter() 
+const signIn = () => { 
   firebase
     .auth()
-    .signInWithEmailAndPassword(email.value, password.value) // THIS LINE CHANGED
+    .signInWithEmailAndPassword(email.value, password.value) 
     .then((data) => {
       console.log('Successfully logged in!');
-      router.push('/feed') // redirect to the feed
+      router.push('/Dashboard') 
     })
     .catch(error => {
       switch (error.code) {
@@ -40,3 +40,4 @@ const signIn = () => { // we also renamed this method
     });
 }
 </script>
+

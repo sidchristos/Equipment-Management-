@@ -1,12 +1,13 @@
 <template>
-  <div>
+
+  <div class='container'>
     <nav>
       <router-link to="/"> Home </router-link> |
       <span> 
         <router-link to="/dashboard"> Dashboard </router-link> |
       </span>
       <span v-if="isLoggedIn"> 
-        <button @click="signOut"> Logout </button> 
+        <button @click="signOut" id="logout-button"> Logout <span class="glyphicon glyphicon-log-out"></span></button> 
       </span>
       <span v-else>
         <router-link to="/register"> Register </router-link> |
@@ -18,18 +19,18 @@
 </template>
 
 <script setup>
-import { ref, watchEffect } from 'vue' // used for conditional rendering
+import { ref, watchEffect } from 'vue' 
 import  firebase from "firebase/compat/app"
 import 'firebase/compat/auth'
 import { useRouter } from 'vue-router'
 const router = useRouter()
 const isLoggedIn = ref(true)
-// runs after firebase is initialized
+
 firebase.auth().onAuthStateChanged(function(user) {
     if (user) {
-      isLoggedIn.value = true // if we have a user
+      isLoggedIn.value = true 
     } else {
-      isLoggedIn.value = false // if we do not
+      isLoggedIn.value = false 
     }
 })
 const signOut = () => {
@@ -38,13 +39,3 @@ const signOut = () => {
 }
 </script>
 
-<style>
-#app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-  margin-top: 60px;
-}
-</style>
