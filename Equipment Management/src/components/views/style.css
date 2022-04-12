@@ -1,0 +1,103 @@
+
+
+#app {
+  font-family: Avenir, Helvetica, Arial, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-align: center;
+  color: #000000;
+}
+
+* {box-sizing: border-box;}
+body {
+  margin: 0;
+  font-family: sans-serif;
+  background:rgb(139, 136, 136);
+  text-align: center;
+  background-size: cover;
+  background-repeat: no-repeat;
+}
+.container {
+  overflow: hidden;
+  background-color: rgb(139, 136, 136);
+  text-align:center;
+}
+.container a {
+  display: inline-block;
+  color: white;
+  text-align: center;
+  padding: 14px 16px;
+  text-decoration: none;
+  font-size: 18px;
+  text-transform: uppercase;
+}
+.container a::before {
+  content:'';
+  width:0%;
+  height:3px;
+  display:block;
+  background-color: #fff;
+  margin-bottom:10px;
+}
+.container a:hover::before {
+  width:100%;
+  transition:all .5s;
+}
+
+input[type=text] {
+  padding:10px;
+  border-radius:10px;
+  width: 300px;
+}
+input[type=password] {
+  padding:10px;
+  border-radius:10px;
+  width: 300px;
+}
+.button {
+  display: inline-block;
+  border-radius: 4px;
+  background-color: #f4511e;
+  border: none;
+  color: #FFFFFF;
+  text-align: center;
+  font-size: 28px;
+  padding: 10px;
+  width: 150px;
+  transition: all 0.5s;
+  cursor: pointer;
+  margin: 5px;
+}
+
+.button span {
+  cursor: pointer;
+  display: inline-block;
+  position: relative;
+  transition: 0.5s;
+}
+
+.button span:after {
+  content: '\00bb';
+  position: absolute;
+  opacity: 0;
+  top: 0;
+  right: -20px;
+  transition: 0.5s;
+}
+
+.button:hover span {
+  padding-right: 25px;
+}
+
+.button:hover span:after {
+  opacity: 1;
+  right: 0;
+}
+
+#logout-button {
+  background-color: #f4511e;
+  color: white;
+  border-radius: 10%;
+  padding: 1px 10px;
+  font-size: 20px;
+}
