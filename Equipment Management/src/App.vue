@@ -7,6 +7,7 @@
         <router-link to="/dashboard"> Dashboard </router-link> |
       </span>
       <span v-if="isLoggedIn"> 
+        <router-link to="/user"> User Profile </router-link>
         <button @click="signOut" id="logout-button"> Logout <span class="glyphicon glyphicon-log-out"></span></button> 
       </span>
       <span v-else>
@@ -14,6 +15,7 @@
         <router-link to="/sign-in"> Login </router-link>
       </span>
     </nav>
+    <hr style="border: 0; height: 0; box-shadow: 0 0 10px 1px black;">
     <router-view />
   </div>
 </template>
@@ -23,6 +25,7 @@ import { ref, watchEffect } from 'vue'
 import  firebase from "firebase/compat/app"
 import 'firebase/compat/auth'
 import { useRouter } from 'vue-router'
+import swal from 'sweetalert';
 const router = useRouter()
 const isLoggedIn = ref(true)
 
@@ -35,6 +38,13 @@ firebase.auth().onAuthStateChanged(function(user) {
 })
 const signOut = () => {
   firebase.auth().signOut()
+  console.log('Successfully logged out!');
+  swal({
+            title: "Success!",
+            text: "You have successfully been logged out",
+            icon: "success",
+            dangerMode: true
+            });
   router.push('/')
 }
 </script>
