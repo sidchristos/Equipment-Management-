@@ -8,18 +8,27 @@
   color: #000000;
 }
 
+
+h1{
+  font-size: 32px;
+}
+
+div{
+  font-size: 18px;
+}
+
 * {box-sizing: border-box;}
 body {
   margin: 0;
   font-family: sans-serif;
-  background:rgb(139, 136, 136);
+  background:rgb(164, 164, 164);
   text-align: center;
   background-size: cover;
   background-repeat: no-repeat;
 }
 .container {
   overflow: hidden;
-  background-color: rgb(139, 136, 136);
+  background-color: rgb(164, 164, 164);
   text-align:center;
 }
 .container a {
@@ -62,8 +71,8 @@ input[type=password] {
   color: #FFFFFF;
   text-align: center;
   font-size: 28px;
-  padding: 10px;
-  width: 150px;
+  padding: 5px;
+  width: 120px;
   transition: all 0.5s;
   cursor: pointer;
   margin: 5px;

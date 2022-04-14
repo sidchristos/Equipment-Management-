@@ -1,19 +1,24 @@
 <template>
+<div>
     <h1> Login to Your Account </h1>
     <p> <input type='text' placeholder="Email" v-model='email'/> </p>
     <p> <input type='password' placeholder="Password" v-model='password'/> </p>
     <p v-if="errMsg"> {{ errMsg }} </p>
     <p> <button @click="signIn" class='button'> Submit </button> </p>
+</div>
 </template>
 
 <script setup>
 import { ref } from 'vue'
 import firebase from "firebase/compat/app";
 import { useRouter } from 'vue-router' 
+import { storeFB } from '../../config/firebase'
+
 const email = ref('')
 const password = ref('')
 const errMsg = ref() 
 const router = useRouter() 
+
 const signIn = () => { 
   firebase
     .auth()

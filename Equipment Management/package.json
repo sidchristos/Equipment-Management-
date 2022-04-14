@@ -9,9 +9,11 @@
   "dependencies": {
     "firebase": "^9.6.10",
     "firebase-admin": "^10.0.2",
+    "sweetalert": "^2.1.2",
     "vue": "^3.2.31",
     "vue-router": "^4.0.14",
-    "vuex": "^4.0.2"
+    "vuex": "^4.0.2",
+    "vuexfire": "^3.2.5"
   },
   "devDependencies": {
     "@vitejs/plugin-vue": "^2.3.1",
