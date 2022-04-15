@@ -10,9 +10,9 @@ H κωδικοποίηση και καταγραφή του εξοπλισμού
 Η παρούσα πτυχιακή θα ασχοληθεί με την υλοποίησης μιας διαδικτυακής εφαρμογής που 
 θα καλύπτει όλα τα παραπάνω. 
 
-## Recommended IDE Setup
+## Website
 
-[VSCode](https://code.visualstudio.com/) + [Volar](https://marketplace.visualstudio.com/items?itemName=johnsoncodehk.volar) (and disable Vetur) + [TypeScript Vue Plugin (Volar)](https://marketplace.visualstudio.com/items?itemName=johnsoncodehk.vscode-typescript-vue-plugin).
+[Equipment-Management](https://equipment-management-1726d.web.app/)
 
 ## Project Setup
 
