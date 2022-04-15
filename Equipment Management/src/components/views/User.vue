@@ -35,10 +35,7 @@ const user = firebase.auth().currentUser;
 const userid = user.uid;
 let User_data = "";
 
-         await storeFB.collection('users')
-                          .doc(userid)
-                          .get()
-                          .then(snapshot  => {
+await storeFB.collection('users').doc(userid).get().then(snapshot  => {
                             User_data = snapshot.data()                
                           })
                           .catch(error => {
