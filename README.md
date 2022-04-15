@@ -1,7 +1,4 @@
-# Equipment Management
-
-Web-based application development for equipment management of organizations/ 
-companies 
+# Description
 
 H κωδικοποίηση και καταγραφή του εξοπλισμού μιας επιχείρησης αποτελεί τη βάση για την 
 ταχύτατη πρόσβαση σε λειτουργικά και ιστορικά δεδομένα του συστήματος. 
