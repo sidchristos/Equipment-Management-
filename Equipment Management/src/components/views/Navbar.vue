@@ -34,6 +34,7 @@ firebase.auth().onAuthStateChanged(function(user) {
       isLoggedIn.value = false 
     }
 })
+
 const signOut = () => {
   firebase.auth().signOut()
   console.log('Successfully logged out!');

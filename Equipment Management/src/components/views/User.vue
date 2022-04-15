@@ -31,12 +31,9 @@ import { storeFB } from '../../config/firebase'
 import 'firebase/compat/auth'
 import swal from 'sweetalert'
 
-
 const user = firebase.auth().currentUser;
 const userid = user.uid;
 let User_data = "";
-
-
 
 await storeFB.collection('users')
                   .doc(userid)
@@ -53,7 +50,6 @@ await storeFB.collection('users')
                           dangerMode: true
                     });
                   });
-
 
 export default {
   data() {
@@ -76,8 +72,7 @@ export default {
         this.Edit = true
       },
 
-      savebtn: function savebtn() {
-       
+      savebtn: function savebtn() { 
         storeFB.collection('users').doc(userid).set({
           email: document.getElementById('em').value,
           firstname:document.getElementById('fn').value,

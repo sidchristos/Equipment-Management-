@@ -20,16 +20,10 @@ const authListener = firebase.auth().onAuthStateChanged(function(user) {
         router.push('/')
     }
 });
+
 onBeforeUnmount(() => {
     // clear up listener
     authListener()
 })
   
 </script>
-
-<style scoped>
-.sweet-alert button.cancel{
-  background-color: yellow;
-  color: black
-}
-</style>
