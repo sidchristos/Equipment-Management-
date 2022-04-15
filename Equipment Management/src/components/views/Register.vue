@@ -1,12 +1,12 @@
 <template>
     <div>
         <h1> Create an Account </h1>
-        <p> <input type='text' placeholder="Email" v-model='email'/> </p>
-        <p> <input type='password' placeholder="Password" v-model='password'/> </p>
         <p> <input type='text' placeholder="First name" v-model='firstname'/> </p>
         <p> <input type='text' placeholder="Last name" v-model='lastname'/> </p>
         <p> <input type='text' placeholder="Phone" v-model='phone'/> </p>
         <p> <input type='text' placeholder="Address" v-model='address'/> </p>
+        <p> <input type='text' placeholder="Email" v-model='email'/> </p>
+        <p> <input type='password' placeholder="Password" v-model='password'/> </p>
         <p> <button @click="register" class="button"> Register </button> </p>
     </div>
 </template>
