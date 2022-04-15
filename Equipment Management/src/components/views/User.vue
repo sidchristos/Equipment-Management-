@@ -35,21 +35,21 @@ const user = firebase.auth().currentUser;
 const userid = user.uid;
 let User_data = "";
 
-await storeFB.collection('users')
-                  .doc(userid)
-                  .get()
-                  .then(snapshot  => {
-                    User_data = snapshot.data()                
-                  })
-                  .catch(error => {
-                    console.log(error.code)
-                    swal({
-                          title: "Ooops",
-                          text: error.message,
-                          icon: "error",
-                          dangerMode: true
-                    });
-                  });
+         await storeFB.collection('users')
+                          .doc(userid)
+                          .get()
+                          .then(snapshot  => {
+                            User_data = snapshot.data()                
+                          })
+                          .catch(error => {
+                            console.log(error.code)
+                            swal({
+                                  title: "Ooops",
+                                  text: error.message,
+                                  icon: "error",
+                                  dangerMode: true
+                            });
+                          });
 
 export default {
   data() {
@@ -63,6 +63,7 @@ export default {
         Edit:true,
 
     }},
+
   methods: {
       editbtn: function editbtn() {
         this.Edit = false
