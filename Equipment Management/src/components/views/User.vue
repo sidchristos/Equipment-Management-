@@ -122,6 +122,12 @@ export default {
           else errMsg.value='Please insert a proper phone number'
           showError(errMsg.value)    
         } 
+        else if (document.getElementById('em').value === "" || !document.getElementById('em').value.includes('@') || !document.getElementById('em').value.includes('.') ){
+          if (document.getElementById('em').value === "") errMsg.value='Email address cannot be empty'
+          else if (!document.getElementById('em').value.includes('@') || !document.getElementById('em').value.includes('.')) errMsg.value='The email address is badly formatted'    
+          else errMsg.value='Please insert a proper email address'
+          showError(errMsg.value)    
+        } 
         else{
         storeFB.collection('users').doc(userid).set({
           email: document.getElementById('em').value,
