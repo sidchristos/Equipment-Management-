@@ -18,6 +18,7 @@
         <router-view />
     </div>
 </template>
+
 <script setup>
 import { ref, watchEffect } from 'vue' 
 import  firebase from "firebase/compat/app"
