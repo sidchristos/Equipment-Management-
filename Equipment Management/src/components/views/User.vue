@@ -6,8 +6,8 @@
       
       <div v-if="Edit"> 
         <p><b>Firstname: </b> {{ Firstname }} <b>Lastname: </b> {{ Lastname }} </p>
-        <p><b>Address:</b> {{ Address }} </p>
-        <p><b>Phone:</b> {{ Phone }} </p>
+        <p><b>Address: </b> {{ Address }} </p>
+        <p><b>Phone: </b> {{ Phone }} </p>
         <p><b>Email: </b> {{ Email }} </p>
         <p> <button @click='editbtn' class='button'> Edit </button> </p>
       </div>
@@ -52,9 +52,9 @@ import 'firebase/compat/auth'
 import { getAuth } from "firebase/auth"
 import swal from 'sweetalert'
 
-const auth = getAuth();
-const user = auth.currentUser;
-const userid = user.uid;
+let auth = getAuth();
+let user = auth.currentUser;
+let userid = user.uid;
 let User_data = "";
 let Role= "";
 const errMsg = ref() 
@@ -138,7 +138,7 @@ export default {
           role:User_data.role
         })
         this.Edit = true
-        this.updateData()
+        this.getData()
         swal({
             title: "Success!",
             text: "User info have been saved",
@@ -148,7 +148,7 @@ export default {
         }
       },
 
-      updateData: function updateData() {
+      getData: function getData() {
            storeFB.collection('users')
                     .doc(userid)
                     .get()
@@ -168,6 +168,7 @@ export default {
           
         }
   }, 
+
 }
 
 function showError(errorMSG){
