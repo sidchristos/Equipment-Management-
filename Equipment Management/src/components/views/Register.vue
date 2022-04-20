@@ -72,18 +72,14 @@ const register = () => {
           firstname:firstname.value,
           lastname:lastname.value,
           phone:phone.value,
-          address:address.value
+          address:address.value,
+          role:'user'
         })
         
       })
       .catch(error => {
         console.log(error.code)
-        swal({
-              title: "Ooops",
-              text: error.message,
-              icon: "error",
-              dangerMode: true
-              });
+        showError(error.message)
       });
     }
 }

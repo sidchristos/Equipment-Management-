@@ -32,42 +32,30 @@ const signIn = () => {
       switch (error.code) {
         case 'auth/invalid-email':
           errMsg.value = 'Invalid email'
-          swal({
-                          title: "Ooops",
-                          text: errMsg.value,
-                          icon: "error",
-                          dangerMode: true
-          });
+          showError(errMsg.value)
           break
         case 'auth/user-not-found':
             errMsg.value = 'No account with that email was found'
-            swal({
-                            title: "Ooops",
-                            text: errMsg.value,
-                            icon: "error",
-                            dangerMode: true
-            });            
+            showError(errMsg.value)           
             break
         case 'auth/wrong-password':
             errMsg.value = 'Incorrect password'
-            swal({
-                          title: "Ooops",
-                          text: errMsg.value,
-                          icon: "error",
-                          dangerMode: true
-            });          
+            showError(errMsg.value)         
             break  
         default:
             errMsg.value = 'Email or password was incorrect'
-            swal({
-                            title: "Ooops",
-                            text: errMsg.value,
-                            icon: "error",
-                            dangerMode: true
-            });
+            showError(errMsg.value)
             break
       }
     });
+}
+function showError(errorMSG){
+  swal({
+            title: "Ooops",
+            text: errorMSG,
+            icon: "error",
+            dangerMode: true
+            });
 }
 </script>
 
