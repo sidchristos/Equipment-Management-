@@ -32,7 +32,7 @@ npm run dev
 npm run build
 ```
 
-### Developer
+### Author
 
 ```
 Stefanou Christos

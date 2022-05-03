@@ -33,9 +33,11 @@ const authListener = firebase.auth().onAuthStateChanged(function(user) {
     }
 });
 
+
 onBeforeUnmount(() => {
     // clear up listener
     authListener()
 })
+
   
 </script>

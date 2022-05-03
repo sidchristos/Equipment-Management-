@@ -12,7 +12,7 @@
 </template>
 
 <script setup>
-import '../views/style.css'
+import '../../style.css'
 import { ref } from 'vue'
 import firebase from "firebase/compat/app";
 import { useRouter } from 'vue-router' 
