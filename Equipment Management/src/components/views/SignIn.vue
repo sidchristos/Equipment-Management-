@@ -53,17 +53,20 @@ const signIn = () => {
 
 const PassReset = () => {
   var Email_reset=prompt('Enter your email');
-  if (Email_reset === "" || !Email_reset.includes('@') || !Email_reset.includes('.')){
-    alert('Enter a valid email address')
-  }
-  else{
-     try{
-        firebase.auth().sendPasswordResetEmail(Email_reset)
-        alert('An email was sent to: ' + Email_reset + ', in order to reset your password')
-      }
-      catch (error) {
-        showError(error);
-      }
+  if(Email_reset != null)
+  {
+    if (Email_reset === '' || !Email_reset.includes('@') || !Email_reset.includes('.')){
+      alert('Enter a valid email address')
+    }
+    else {
+      try{
+          firebase.auth().sendPasswordResetEmail(Email_reset)
+          alert('An email was sent to: ' + Email_reset + ', in order to reset your password')
+        }
+        catch (error) {
+          showError(error)
+        }
+    }
   }
 }
 

@@ -21,14 +21,14 @@ div{
 body {
   margin: 0;
   font-family: sans-serif;
-  background:rgb(164, 164, 164);
+  background:rgb(216, 216, 216);
   text-align: center;
   background-size: cover;
   background-repeat: no-repeat;
 }
 .container {
   overflow: hidden;
-  background-color: rgb(164, 164, 164);
+  background-color: rgb(216, 216, 216);
   text-align:center;
 }
 .container a {
@@ -39,14 +39,18 @@ body {
   text-decoration: none;
   font-size: 18px;
   text-transform: uppercase;
+  text-shadow: 1px 1px 2px black;
 }
+
 .container a::before {
   content:'';
   width:0%;
   height:3px;
   display:block;
-  background-color: #fff;
+  background-color: white;
+  box-shadow: 0 0 10px 1px black;
   margin-bottom:10px;
+  opacity: 0.3;
 }
 .container a:hover::before {
   width:100%;
@@ -70,7 +74,7 @@ input[type=password] {
   border: none;
   color: #FFFFFF;
   text-align: center;
-  font-size: 28px;
+  font-size: 24px;
   padding: 5px;
   width: 120px;
   transition: all 0.5s;
