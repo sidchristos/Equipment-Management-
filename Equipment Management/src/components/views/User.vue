@@ -3,12 +3,6 @@
     <h1> User Profile </h1>
     <div>      
       <div v-if="Preview"> 
-        <!-- old ui
-        <p><b>Firstname: </b> {{ Firstname }} <b>Lastname: </b> {{ Lastname }} </p>
-        <p><b>Address: </b> {{ Address }} </p>
-        <p><b>Phone: </b> {{ Phone }} </p>
-        <p><b>Email: </b> {{ Email }} </p>
-        -->
         <div class="user-profile py-4">
           <div class="container">
             <div class="row">
@@ -113,7 +107,7 @@ import { ref } from 'vue'
 import firebase from "firebase/compat/app"
 import { storeFB,storageRef } from '../../config/firebase'
 import 'firebase/compat/auth'
-import { getAuth } from "firebase/auth"
+import { getAuth,updateEmail  } from "firebase/auth"
 import swal from 'sweetalert'
 
 let auth = getAuth();
@@ -150,6 +144,7 @@ export default {
         uploadValue: 0
     }},
 
+
   methods: {
       editbtn: function editbtn() {
         this.Preview = false
@@ -159,7 +154,7 @@ export default {
         this.Preview = true
       },
 
-      editImgbtn: function editbtn(event) {
+      editImgbtn: function editImgbtn(event) {
       this.uploadValue=0;
       this.picture=null;
       this.imageData = event.target.files[0];
@@ -226,6 +221,14 @@ export default {
           showError(errMsg.value)    
         } 
         else{
+        if (document.getElementById('em').value != this.email) {
+          updateEmail(user, document.getElementById('em').value).then(() => {
+              console.log("Auth email updated")
+            }).catch((error) => {
+              console.log(error.code)
+              showError(error.code)
+            });
+        }
         storeFB.collection('users').doc(userid).set({
           email: document.getElementById('em').value,
           firstname:document.getElementById('fn').value,
