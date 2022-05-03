@@ -1,24 +1,85 @@
 <template>
 <div>
     <h1> User Profile </h1>
-    <div>
-    <p><b>User ID: </b>{{ Userid }} <b>Role: </b>{{ Role }} </p>
-      
-      <div v-if="Edit"> 
+    <div>      
+      <div v-if="Preview"> 
+        <!-- old ui
         <p><b>Firstname: </b> {{ Firstname }} <b>Lastname: </b> {{ Lastname }} </p>
         <p><b>Address: </b> {{ Address }} </p>
         <p><b>Phone: </b> {{ Phone }} </p>
         <p><b>Email: </b> {{ Email }} </p>
-        <p> <button @click='editbtn' class='button'> Edit </button> </p>
+        -->
+        <div class="user-profile py-4">
+          <div class="container">
+            <div class="row">
+              <div class="col-lg-4">
+                <div class="card shadow-sm">
+                  <div class="card-header bg-transparent text-center">
+                    <div class="Img_container">
+                      <img class="profile_img" v-bind:src="Avatar" alt="Avatar Pic" > <!-- Add img from firestore -->
+                        <div class="middle">
+                          <!-- <div><button type="button" @click='editImgbtn' class="Img_edit_button">Edit</button></div> img Edit button -->
+                          <label class="Img_edit_button">
+                            <input type="file" id=uploader @change="editImgbtn" accept="image/*"/>Edit
+                          </label>
+                        </div>
+                    </div>
+                    <h3>{{ Firstname }} {{ Lastname }}</h3>
+                  </div>
+                  <div class="card-body">
+                    <p class="mb-0"><strong class="pr-1">User ID: </strong> {{ Userid }}</p>
+                    <p class="mb-0"><strong class="pr-1">Role: </strong> {{ Role }}</p>
+                  </div>
+                </div>
+              </div>
+              <div class="col-lg-8">
+                <div class="card shadow-sm">
+                  <div class="card-header bg-transparent border-0">
+                    <h3 class="mb-0"><i class="far fa-clone pr-1"></i>General Information</h3>
+                  </div>
+                  <div class="card-body pt-0">
+                    <table class="table table-bordered">
+                      <tr>
+                        <th width="30%"> Address </th>
+                        <td width="2%">:</td>
+                        <td>{{ Address }}</td>
+                      </tr>
+                      <tr>
+                        <th width="30%"> Phone </th>
+                        <td width="2%">:</td>
+                        <td>{{ Phone }}</td>
+                      </tr>
+                      <tr>
+                        <th width="30%"> Email </th>
+                        <td width="2%">:</td>
+                        <td>{{ Email }}</td>
+                      </tr>
+                    </table>
+                  </div>
+                </div>
+                <div class="card shadow-sm">
+                  <div class="card-header bg-transparent border-0">
+                    <h3 class="mb-0"><i class="far fa-clone pr-1"></i>Other Information</h3>
+                  </div>
+                  <div class="card-body pt-0">
+                    <p style="text-align: left;"> {{Information}} </p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      <br><p> <button @click='editbtn' class='button'> Edit </button> </p>
       </div>
       <div v-else>
+        <p><b>User ID: </b>{{ Userid }} <b>Role: </b>{{ Role }} </p>
         <table style="margin-left: auto; margin-right: auto; text-align: right;">
         <tr>
-          <th> <b>Firstname: </b> </th>
+          <th style="text-align: right;"> <b>Firstname: </b> </th>
           <th> <p> <input type='text' :value=Firstname id="fn" /> </p></th>
         </tr>
         <tr>
-          <th> <b>Lastname: </b> </th>
+          <th style="text-align: right;"> <b>Lastname: </b> </th>
           <th>  <p> <input type='text' :value=Lastname id="ln"/> </p></th>
         </tr>
         <tr>
@@ -33,13 +94,16 @@
           <th style="text-align: right;"> <b>Email: </b> </th>
           <th> <p> <input type='text' :value=Email id="em"/> </p></th>
         </tr>
+        <tr>
+          <th style="text-align: right; vertical-align: super;"> <b>Other Information: </b> </th>
+          <th> <p> <textarea id="inf" rows="5" cols="50" :value=Information> </textarea></p></th>
+        </tr>
         </table>
         <p> 
           <button @click='cancelbtn' class='button'> Cancel </button> 
           <button @click='savebtn' class='button'> Save </button> 
         </p>
       </div>   
-
     </div>
 </div>    
 </template>
@@ -47,7 +111,7 @@
 <script>
 import { ref } from 'vue'
 import firebase from "firebase/compat/app"
-import { storeFB } from '../../config/firebase'
+import { storeFB,storageRef } from '../../config/firebase'
 import 'firebase/compat/auth'
 import { getAuth } from "firebase/auth"
 import swal from 'sweetalert'
@@ -60,19 +124,15 @@ let Role= "";
 const errMsg = ref() 
 
 await storeFB.collection('users').doc(userid).get().then(snapshot  => {
-                            User_data = snapshot.data()                
+                            User_data = snapshot.data()   
                           })
                           .catch(error => {
                             console.log(error.code)
-                            swal({
-                                  title: "Ooops",
-                                  text: error.message,
-                                  icon: "error",
-                                  dangerMode: true
-                            });
+                            showError(error.code)
                           });
 
 export default {
+  name: 'Edit',
   data() {
     return {
         Userid:userid,
@@ -82,16 +142,53 @@ export default {
         Phone:User_data.phone,
         Email:User_data.email,
         Role:User_data.role,
-        Edit:true
+        Information:User_data.infromation,
+        Avatar:User_data.avatar,
+        Preview:true,
+        picture: null,
+        imageData: null,
+        uploadValue: 0
     }},
 
   methods: {
       editbtn: function editbtn() {
-        this.Edit = false
+        this.Preview = false
       },
 
       cancelbtn: function cancelbtn() {
-        this.Edit = true
+        this.Preview = true
+      },
+
+      editImgbtn: function editbtn(event) {
+      this.uploadValue=0;
+      this.picture=null;
+      this.imageData = event.target.files[0];
+
+        const storageRef=firebase.storage().ref(`${this.imageData.name}`).put(this.imageData);
+        
+        storageRef.on(`state_changed`,snapshot=>{
+          this.uploadValue = (snapshot.bytesTransferred/snapshot.totalBytes)*100;
+        }, 
+        error=>{
+          console.log(error.message)
+        },
+        ()=>{this.uploadValue=100;
+          storageRef.snapshot.ref.getDownloadURL().then((url)=>{
+            this.Avatar =url
+            storeFB.collection('users').doc(userid).set({
+                email:User_data.email,
+                firstname:User_data.firstname,
+                lastname:User_data.lastname,
+                phone:User_data.phone,
+                address:User_data.address,
+                infromation:User_data.infromation,
+                role:User_data.role,
+                avatar:url
+            })
+            this.getData()
+          });
+        }
+        );
       },
 
       savebtn: function savebtn() {
@@ -135,9 +232,10 @@ export default {
           lastname:document.getElementById('ln').value,
           phone:document.getElementById('ph').value,
           address:document.getElementById('ad').value,
-          role:User_data.role
+          infromation:document.getElementById('inf').value,
+          role:User_data.role,
+          avatar:User_data.avatar
         })
-        this.Edit = true
         this.getData()
         swal({
             title: "Success!",
@@ -149,24 +247,29 @@ export default {
       },
 
       getData: function getData() {
-           storeFB.collection('users')
+          storeFB.collection('users')
                     .doc(userid)
                     .get()
                     .then(snapshot  => {
                       User_data = snapshot.data()  
-                      this.Firstname=User_data.firstname
+                      this.Firstname=User_data.firstname,
                       this.Lastname=User_data.lastname,
                       this.Address=User_data.address,
                       this.Phone=User_data.phone,
                       this.Email=User_data.email, 
-                      this.role=User_data.email                   
+                      this.Infromation=User_data.infromation, // TODO: async issue with loading data
+                      this.role=User_data.role,
+                      this.avatar=User_data.avatar                                
                     })
                     .catch(error => {
                       console.log(error.code)
                       showError(error.code)
+                    })
+                    .finally(() => {
+                      this.Preview = true                    
                     });
           
-        }
+      }
   }, 
 
 }
@@ -183,6 +286,5 @@ function showError(errorMSG){
 function containsNumber(str) {
   return /\d/.test(str);
 }
-
 
 </script>
