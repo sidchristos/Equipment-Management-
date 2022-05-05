@@ -45,6 +45,6 @@ const signOut = () => {
             icon: "success",
             dangerMode: true
             });
-  router.push('/')
+  router.push('/sign-in')
 }
 </script>
