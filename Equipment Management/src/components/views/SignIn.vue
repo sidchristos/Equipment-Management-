@@ -14,7 +14,7 @@ import firebase from "firebase/compat/app"
 import { useRouter } from 'vue-router'
 import swal from 'sweetalert'
 import { storeFB } from '../../config/firebase'
-
+import { getAuth, setPersistence, browserSessionPersistence } from "firebase/auth";
 
 const email = ref('')
 const password = ref('')
@@ -22,32 +22,41 @@ const errMsg = ref()
 const router = useRouter() 
 
 const signIn = () => { 
-  firebase
-    .auth()
-    .signInWithEmailAndPassword(email.value, password.value) 
-    .then((data) => {
-      console.log('Successfully logged in!');
-      router.push('/Dashboard') 
+  const auth = getAuth();
+  setPersistence(auth, browserSessionPersistence)
+  .then(() => {
+      firebase
+        .auth()
+        .signInWithEmailAndPassword(email.value, password.value) 
+        .then((data) => {
+          console.log('Successfully logged in!');
+          router.push('/Dashboard') 
+        })
+        .catch(error => {
+          switch (error.code) {
+            case 'auth/invalid-email':
+              errMsg.value = 'Invalid email'
+              showError(errMsg.value)
+              break
+            case 'auth/user-not-found':
+                errMsg.value = 'No account with that email was found'
+                showError(errMsg.value)           
+                break
+            case 'auth/wrong-password':
+                errMsg.value = 'Incorrect password'
+                showError(errMsg.value)         
+                break  
+            default:
+                errMsg.value = 'Email or password was incorrect'
+                showError(errMsg.value)
+                break
+          }
+        });
     })
-    .catch(error => {
-      switch (error.code) {
-        case 'auth/invalid-email':
-          errMsg.value = 'Invalid email'
-          showError(errMsg.value)
-          break
-        case 'auth/user-not-found':
-            errMsg.value = 'No account with that email was found'
-            showError(errMsg.value)           
-            break
-        case 'auth/wrong-password':
-            errMsg.value = 'Incorrect password'
-            showError(errMsg.value)         
-            break  
-        default:
-            errMsg.value = 'Email or password was incorrect'
-            showError(errMsg.value)
-            break
-      }
+    .catch((error) => {
+      // Handle Errors here.
+      const errorCode = error.code;
+      const errorMessage = error.message;
     });
 }
 

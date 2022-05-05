@@ -25,11 +25,11 @@ const authListener = firebase.auth().onAuthStateChanged(function(user) {
     if (!user) { 
         swal({
             title: "Ooops",
-            text: "You must be logged in to view this page. Redirecting to Homepage",
+            text: "You must be logged in to view dashboard. Redirecting to Login page",
             icon: "error",
             dangerMode: true
             });
-        router.push('/')
+        router.push('/sign-in')
     }
 });
 

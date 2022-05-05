@@ -13,9 +13,12 @@
                       <img class="profile_img" v-bind:src="Avatar" alt="Avatar Pic" > <!-- Add img from firestore -->
                         <div class="middle">
                           <!-- <div><button type="button" @click='editImgbtn' class="Img_edit_button">Edit</button></div> img Edit button -->
-                          <label class="Img_edit_button">
+                          <label class="Img_edit_button" v-if="uploadValue == 0">
                             <input type="file" id=uploader @change="editImgbtn" accept="image/*"/>Edit
                           </label>
+                          <div v-if="uploadValue != 0">
+                            <p>Progress: {{uploadValue.toFixed()+"%"}} <progress id="progress" class="progress" :value="uploadValue" max="100" ></progress>  </p>
+                          </div>
                         </div>
                     </div>
                     <h3>{{ Firstname }} {{ Lastname }}</h3>
@@ -110,9 +113,8 @@ import 'firebase/compat/auth'
 import { getAuth,updateEmail  } from "firebase/auth"
 import swal from 'sweetalert'
 
-let auth = getAuth();
-let user = auth.currentUser;
-let userid = user.uid;
+const user = getAuth().currentUser;
+const userid = user.uid;
 let User_data = "";
 let Role= "";
 const errMsg = ref() 
@@ -158,16 +160,15 @@ export default {
       this.uploadValue=0;
       this.picture=null;
       this.imageData = event.target.files[0];
-
-        const storageRef=firebase.storage().ref(`${this.imageData.name}`).put(this.imageData);
+      const storageRef=firebase.storage().ref(`${this.imageData.name}`).put(this.imageData);
         
         storageRef.on(`state_changed`,snapshot=>{
-          this.uploadValue = (snapshot.bytesTransferred/snapshot.totalBytes)*100;
+          this.uploadValue = 1;
         }, 
         error=>{
           console.log(error.message)
         },
-        ()=>{this.uploadValue=100;
+        ()=>{
           storageRef.snapshot.ref.getDownloadURL().then((url)=>{
             this.Avatar =url
             storeFB.collection('users').doc(userid).set({
@@ -180,10 +181,14 @@ export default {
                 role:User_data.role,
                 avatar:url
             })
+            setTimeout(() => { this.uploadValue=25; }, "300")
+            setTimeout(() => { this.uploadValue=50; }, "400")
+            setTimeout(() => { this.uploadValue=75; }, "500")
             this.getData()
+            setTimeout(() => { this.uploadValue=100; }, "800")
+            setTimeout(() => { this.uploadValue=0; }, "2000")
           });
-        }
-        );
+        });
       },
 
       savebtn: function savebtn() {
@@ -269,7 +274,7 @@ export default {
                       showError(error.code)
                     })
                     .finally(() => {
-                      this.Preview = true                    
+                      this.Preview = true              
                     });
           
       }
