@@ -21,7 +21,7 @@
                           </div>
                         </div>
                     </div>
-                    <h3>{{ Firstname }} {{ Lastname }}</h3>
+                    <h3 style="color:Black;">{{ Firstname }} {{ Lastname }}</h3>
                   </div>
                   <div class="card-body">
                     <p class="mb-0"><strong class="pr-1">User ID: </strong> {{ Userid }}</p>
@@ -71,30 +71,30 @@
       <div v-else>
         <p><b>User ID: </b>{{ Userid }} <b>Role: </b>{{ Role }} </p>
         <table style="margin-left: auto; margin-right: auto; text-align: right;">
-        <tr>
-          <th style="text-align: right;"> <b>Firstname: </b> </th>
-          <th> <p> <input type='text' :value=Firstname id="fn" /> </p></th>
-        </tr>
-        <tr>
-          <th style="text-align: right;"> <b>Lastname: </b> </th>
-          <th>  <p> <input type='text' :value=Lastname id="ln"/> </p></th>
-        </tr>
-        <tr>
-          <th style="text-align: right;"> <b>Address:</b> </th>
-          <th> <p> <input type='text' :value=Address id="ad"/> </p> </th>
-        </tr>
-        <tr>
-          <th  style="text-align: right;"> <b>Phone:</b> </th>
-          <th><p> <input type='text' :value=Phone id="ph"/> </p></th>
-        </tr>
-        <tr>
-          <th style="text-align: right;"> <b>Email: </b> </th>
-          <th> <p> <input type='text' :value=Email id="em"/> </p></th>
-        </tr>
-        <tr>
-          <th style="text-align: right; vertical-align: super;"> <b>Other Information: </b> </th>
-          <th> <p> <textarea id="inf" rows="5" cols="50" :value=Information> </textarea></p></th>
-        </tr>
+          <tr>
+            <th style="text-align: right;padding-right: 1%;"> <b>Firstname: </b> </th>
+            <th> <p> <input type='text' :value=Firstname id="fn" /> </p></th>
+          </tr>
+          <tr>
+            <th style="text-align: right;padding-right: 1%;"> <b>Lastname: </b> </th>
+            <th>  <p> <input type='text' :value=Lastname id="ln"/> </p></th>
+          </tr>
+          <tr>
+            <th style="text-align: right;padding-right: 1%;"> <b>Address:</b> </th>
+            <th> <p> <input type='text' :value=Address id="ad"/> </p> </th>
+          </tr>
+          <tr>
+            <th  style="text-align: right;padding-right: 1%;"> <b>Phone:</b> </th>
+            <th><p> <input type='text' :value=Phone id="ph"/> </p></th>
+          </tr>
+          <tr>
+            <th style="text-align: right;padding-right: 1%;"> <b>Email: </b> </th>
+            <th> <p> <input type='text' :value=Email id="em"/> </p></th>
+          </tr>
+          <tr>
+            <th style="text-align: right; vertical-align: super;"> <b>Other Information: </b> </th>
+            <th> <p> <textarea id="inf" rows="5" cols="50" :value=Information > </textarea></p></th>
+          </tr>
         </table>
         <p> 
           <button @click='cancelbtn' class='button'> Cancel </button> 
@@ -106,7 +106,7 @@
 </template>
 
 <script>
-import { ref } from 'vue'
+import { ref , defineComponent} from 'vue'
 import firebase from "firebase/compat/app"
 import { storeFB,storageRef } from '../../config/firebase'
 import 'firebase/compat/auth'
@@ -127,7 +127,7 @@ await storeFB.collection('users').doc(userid).get().then(snapshot  => {
                             showError(error.code)
                           });
 
-export default {
+export default defineComponent({
   name: 'Edit',
   data() {
     return {
@@ -226,30 +226,27 @@ export default {
           showError(errMsg.value)    
         } 
         else{
-        if (document.getElementById('em').value != this.email) {
           updateEmail(user, document.getElementById('em').value).then(() => {
-              console.log("Auth email updated")
+                      storeFB.collection('users').doc(userid).set({
+                        email: document.getElementById('em').value,
+                        firstname:document.getElementById('fn').value,
+                        lastname:document.getElementById('ln').value,
+                        phone:document.getElementById('ph').value,
+                        address:document.getElementById('ad').value,
+                        infromation:document.getElementById('inf').value,
+                        role:User_data.role,
+                        avatar:User_data.avatar
+                      })
+                      this.getData()
+                      swal({
+                          title: "Success!",
+                          text: "User info have been saved",
+                          icon: "success",
+                          dangerMode: true
+                          });
             }).catch((error) => {
               console.log(error.code)
-              showError(error.code)
-            });
-        }
-        storeFB.collection('users').doc(userid).set({
-          email: document.getElementById('em').value,
-          firstname:document.getElementById('fn').value,
-          lastname:document.getElementById('ln').value,
-          phone:document.getElementById('ph').value,
-          address:document.getElementById('ad').value,
-          infromation:document.getElementById('inf').value,
-          role:User_data.role,
-          avatar:User_data.avatar
-        })
-        this.getData()
-        swal({
-            title: "Success!",
-            text: "User info have been saved",
-            icon: "success",
-            dangerMode: true
+              this.showError(error.code) 
             });
         }
       },
@@ -277,19 +274,20 @@ export default {
                       this.Preview = true              
                     });
           
+      },
+      showError: function showError(errorMSG){
+        swal({
+                  title: "Ooops",
+                  text: errorMSG,
+                  icon: "error",
+                  dangerMode: true
+                  })
       }
   }, 
 
-}
+})
 
-function showError(errorMSG){
-  swal({
-            title: "Ooops",
-            text: errorMSG,
-            icon: "error",
-            dangerMode: true
-            })
-}
+
 
 function containsNumber(str) {
   return /\d/.test(str);

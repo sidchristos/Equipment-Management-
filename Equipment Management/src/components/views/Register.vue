@@ -44,10 +44,11 @@ const register = () => {
     else errMsg.value='Please insert a proper lastname'
     showError(errMsg.value)
   } 
-  else if (phone.value === "" || isNaN(phone.value)  || phone.value.length < 10){
+  else if (phone.value === "" || isNaN(phone.value)  || phone.value.length < 10 || phone.value.length >= 15){
     if (phone.value === "") errMsg.value='Phone cannot be empty'
     else if (isNaN(phone.value)) errMsg.value='Phone must contain only numbers'
-    else if (phone.value.length < 10) errMsg.value='Phone  must be at least 10 digits'    
+    else if (phone.value.length < 10) errMsg.value='Phone  must be at least 10 digits'
+    else if (phone.value.length > 15) errMsg.value='Phone  must be less than 15 digits'      
     else errMsg.value='Please insert a proper phone number'
     showError(errMsg.value)    
   } 
@@ -73,7 +74,9 @@ const register = () => {
           lastname:lastname.value,
           phone:phone.value,
           address:address.value,
-          role:'user'
+          role:'user',
+          infromation:'Add a short note',
+          avatar: 'https://firebasestorage.googleapis.com/v0/b/equipment-management-1726d.appspot.com/o/png-computer-icons-user-profile-clip-art-priest_thumbnail.png?alt=media&token=8292d069-b26d-45fe-913f-1ab18538f226'
         })
         
       })

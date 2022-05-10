@@ -2,10 +2,10 @@
     <div>
         <h1> Dashboard </h1>
         <div>
-            <div style="width: 250px; float: left; ">
+            <!-- <div style="width: 250px; float: left; ">
                 <Filters />    
-            </div>
-            <div style="margin-left: 300px; margin-top: 30px;'">
+            </div> -->
+            <div>
                 <TableEquipment />    
             </div>           
         </div>

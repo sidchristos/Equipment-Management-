@@ -16,6 +16,7 @@
     "sweetalert": "^2.1.2",
     "vue": "^3.2.33",
     "vue-router": "^4.0.14",
+    "vue3-table-lite": "^1.2.0",
     "vuex": "^4.0.2",
     "vuexfire": "^3.2.5"
   },
