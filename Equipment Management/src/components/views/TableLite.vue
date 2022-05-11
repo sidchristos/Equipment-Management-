@@ -4,11 +4,6 @@
     <div class="vtl-card-body">
       <div class="vtl-row">
         <div class="col-sm-12">
-          <div v-if="isLoading" class="vtl-loading-mask">
-            <div class="vtl-loading-content">
-              <span style="color: white">Loading...</span>
-            </div>
-          </div>
           <table
             class="vtl-table vtl-table-hover vtl-table-bordered vtl-table-responsive vtl-table-responsive-sm"
             ref="localTable"
@@ -242,7 +237,8 @@
       </div>
       <div class="vtl-row" v-else>
         <div class="vtl-empty-msg col-sm-12 text-center">
-          {{ messages.noDataAvailable }}
+          <br>
+          <b>{{ messages.noDataAvailable }}</b>
         </div>
       </div>
     </div>
@@ -344,7 +340,7 @@ export default defineComponent({
           pagingInfo: "Showing {0}-{1} of {2}",
           pageSizeChangeLabel: "Row count:",
           gotoPageLabel: "Go to page:",
-          noDataAvailable: "No data",
+          noDataAvailable: "No data, press Refresh",
         };
       },
     },
