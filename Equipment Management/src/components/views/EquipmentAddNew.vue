@@ -38,8 +38,7 @@
                         <option>Not working</option>
                       </select>
               </p></th>
-            </tr> 
-            <hr style="border-top: 1px solid white;">           
+            </tr>         
             <tr>
               <th style="text-align: right; vertical-align: super;"> <b> Description: </b> </th>
               <th> <p> <textarea  rows="5" cols="50" v-model="Description"> </textarea></p></th>
@@ -58,7 +57,6 @@ import firebase from "firebase/compat/app"
 import { storeFB } from '../../config/firebase'
 import 'firebase/compat/auth'
 import { getAuth } from "firebase/auth"
-import router from "../../config/routes.js"
 import swal from 'sweetalert'
 
 const userid = getAuth().currentUser.uid;
@@ -81,20 +79,21 @@ export default defineComponent({
     }
   },
 
-
   methods: {
       cancelbtn: function cancelbtn() {
         this.$router.push({ path: '/dashboard', replace: true })
       },
       savebtn: function savebtn() {
         if( this.Name == null){
-          showError("Please enter a Name")
+          this.showError("Please enter a Name")
+        }else if( this.Name.length > 20){
+          this.showError("Name cannot be more than 20 chars")
         }else if( this.Category == null){
-          showError("Please choose a category")
+          this.showError("Please choose a category")
         }else if( this.Location == null){
-          showError("Please choose a location")
+          this.showError("Please choose a location")
         }else if( this.State == null){
-          showError("Please choose a state")
+          this.showError("Please choose a state")
         }else{
           try{
             storeFB.collection('inventory').doc().set({
@@ -105,6 +104,7 @@ export default defineComponent({
                             description:this.Description,
                             date:this.Date,
                             state:this.State,
+                            owner_name:this.getOwnerName()
               })
               swal({
                             title: "Success!",
@@ -133,11 +133,27 @@ export default defineComponent({
                   dangerMode: true
                   })
       }, 
-  }
-
+  },
+  
+  setup() {
+    var OwnerName=''
+    const getOwnerName = ( ) => {
+      storeFB.collection('users').doc(userid).get().then(snapshot  => {
+                             OwnerName = snapshot.data().firstname +' '+ snapshot.data().lastname  
+                          })
+                          .catch(error => {
+                            console.log(error.code)
+                          });
+                          return OwnerName
+    }
+    return {
+      getOwnerName,
+      OwnerName
+    };
+  },
+  
+  created() {
+    this.getOwnerName()
+  },
 })
-
-
-
-
 </script>

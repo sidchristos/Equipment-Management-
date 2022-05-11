@@ -14,11 +14,9 @@
       :messages="table3.messages"
       @do-search="doSearch"
       @is-finished="table3.isLoading = false"
-      comment=":has-checkbox=true"
-      comment2="@return-checked-rows=updateCheckedRows"
     >
       <template v-slot:name="data" >
-          <router-link :to='{ name: "equipmentProfile",  params: { id: data.value.name }}'>
+          <router-link :to='{ name: "equipmentProfile",  params: { id: data.value.InvID }}'>
             <slot></slot>
             {{ data.value.name }}
           </router-link>
@@ -29,17 +27,25 @@
             {{ data.value.location }}
           </router-link>
       </template>
+      <template v-slot:state="data" >
+            <slot></slot>
+            <div v-if="data.value.state =='Active'" style="color: green;"> <span class="glyphicon glyphicon-ok"></span>  {{ data.value.state }} </div>
+            <div v-else-if="data.value.state =='Maintance'" style="color: orange;"><span class="glyphicon glyphicon-minus"></span>  {{ data.value.state }} </div>
+            <div v-else-if="data.value.state =='Not working'" style="color: red;"><span class="glyphicon glyphicon-remove"></span>  {{ data.value.state }} </div>
+      </template>
     </table-lite>
   </div>
 </template>
 
 <script>
-import { defineComponent, reactive } from "vue";
+import { defineComponent, reactive, onMounted  } from "vue";
 import TableLite from "./TableLite.vue";
-import router from "../../config/routes.js"
+import firebase from "firebase/compat/app"
+import { storeFB,storageRef } from '../../config/firebase'
+import { query, collection, getDocs } from "firebase/firestore"
+import * as firestore from "firebase/firestore";
 
-
-
+/* OLD SAMPLE
 const sampleData1 = (offst, limit) => {
   offst = offst + 1;
   let data = [];
@@ -70,11 +76,15 @@ const sampleData2 = (offst, limit) => {
   }
   return data;
 };
+*/
 
 
 export default defineComponent({
   name: "App",
-
+  data: function() {
+    return {
+    }
+  },
   components: {
     TableLite
   },
@@ -82,8 +92,11 @@ export default defineComponent({
       AddNewbtn: function AddNewbtn() {
         this.$router.push({ path: '/equipmentAddNew', replace: true })
       },
+
   },
   setup() {
+  let inventoryVariants = [];
+
     const table3 = reactive({
       isLoading: false,
       isReSearch: false,
@@ -98,13 +111,13 @@ export default defineComponent({
         {
           label: "Location",
           field: "location",
-          width: "10%",
+          width: "20%",
           sortable: true,
         },
         {
           label: "Name",
           field: "name",
-          width: "10%",
+          width: "30%",
           sortable: true,
         },
         {
@@ -116,18 +129,18 @@ export default defineComponent({
         {
           label: "State",
           field: "state",
-          width: "10%",
+          width: "17%",
           sortable: true,
         },     
         {
           label: "Owner",
-          field: "owner",
-          width: "10%",
+          field: "owner_name",
+          width: "20%",
           sortable: true,
         },            
       ],
-      rows: sampleData1(0, 10),
-      totalRecordCount: 20,
+      rows: [],
+      totalRecordCount: 0,
       sortable: {
         order: "id",
         sort: "asc",
@@ -136,10 +149,32 @@ export default defineComponent({
         pagingInfo: "Showing {0}-{1} of {2}",
         pageSizeChangeLabel: "Row count:",
         gotoPageLabel: "Go to page:",
-        noDataAvailable: "No data",
+        noDataAvailable: "Loading data..",
       },
     });
 
+    const getData = ( order, sort) => {
+      table3.isLoading = true;
+      let i=0
+      firestore.getDocs(firestore.collection(storeFB, "inventory")).then((querySnapshot) => {
+          querySnapshot.forEach((doc) => {
+            let dict = { ...doc.data(), InvID: doc.id, id:i+1};
+            inventoryVariants.push(dict);
+            i++
+          });
+          table3.rows =inventoryVariants;
+          table3.totalRecordCount = i;
+          table3.sortable.order = order;
+          table3.sortable.sort =sort;
+          table3.isLoading = false;
+      });
+    };
+
+    const doSearch = (offset, limit, order, sort) => {
+      console.log('doSearch')
+    };
+
+    /* OLD SAMPLE
     const doSearch = (offset, limit, order, sort) => {
       table3.isLoading = true;
       setTimeout(() => {
@@ -157,12 +192,21 @@ export default defineComponent({
         table3.sortable.sort = sort;
       }, 600);
     };
+    */
 
     return {
       table3,
-      doSearch
+      doSearch,
+      getData
     };
   },
+  created() {
+    //console.log("Created")
+    this.getData()
+  },
+  mounted(){ 
+    //console.log("Mounted")
+  }
 });
 </script>
 

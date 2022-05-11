@@ -124,7 +124,7 @@ await storeFB.collection('users').doc(userid).get().then(snapshot  => {
                           })
                           .catch(error => {
                             console.log(error.code)
-                            showError(error.code)
+                            this.showError(error.code)
                           });
 
 export default defineComponent({
@@ -197,33 +197,33 @@ export default defineComponent({
           else if (containsNumber(document.getElementById('fn').value)) errMsg.value='Firstname cannot contain numbers'
           else if (document.getElementById('fn').value.length < 4) errMsg.value='Firstname must be at least 4 characters'
           else errMsg.value='Please insert a proper firstname'
-          showError(errMsg.value)
+          this.showError(errMsg.value)
         } 
         else if (document.getElementById('ln').value=== "" || containsNumber(document.getElementById('ln').value) || document.getElementById('ln').value.length < 5){
           if (document.getElementById('ln').value === "") errMsg.value='Lastname cannot be empty'
           else if (containsNumber(document.getElementById('ln').value)) errMsg.value='Lastname cannot contain numbers'
           else if (document.getElementById('ln').value< 5) errMsg.value='Lastname must be at least 5 characters'    
           else errMsg.value='Please insert a proper lastname'
-          showError(errMsg.value)
+          this.showError(errMsg.value)
         } 
         else if (document.getElementById('ad').value === "" || document.getElementById('ad').value.length < 8){
           if (document.getElementById('ad').value === "") errMsg.value='Address cannot be empty'
           else if (document.getElementById('ad').value.length < 5) errMsg.value='Address must be at least 8 characters'  
           else errMsg.value='Please insert a proper address'
-          showError(errMsg.value)            
+          this.showError(errMsg.value)            
         }
         else if (document.getElementById('ph').value === "" || isNaN(document.getElementById('ph').value)  || document.getElementById('ph').value.length < 10){
           if (document.getElementById('ph').value === "") errMsg.value='Phone cannot be empty'
           else if (isNaN(document.getElementById('ph').value)) errMsg.value='Phone must contain only numbers'
           else if (document.getElementById('ph').value.length < 10) errMsg.value='Phone  must be at least 10 digits'    
           else errMsg.value='Please insert a proper phone number'
-          showError(errMsg.value)    
+          this.showError(errMsg.value)    
         } 
         else if (document.getElementById('em').value === "" || !document.getElementById('em').value.includes('@') || !document.getElementById('em').value.includes('.') ){
           if (document.getElementById('em').value === "") errMsg.value='Email address cannot be empty'
           else if (!document.getElementById('em').value.includes('@') || !document.getElementById('em').value.includes('.')) errMsg.value='The email address is badly formatted'    
           else errMsg.value='Please insert a proper email address'
-          showError(errMsg.value)    
+          this.showError(errMsg.value)    
         } 
         else{
           updateEmail(user, document.getElementById('em').value).then(() => {
@@ -268,7 +268,7 @@ export default defineComponent({
                     })
                     .catch(error => {
                       console.log(error.code)
-                      showError(error.code)
+                      this.showError(error.code)
                     })
                     .finally(() => {
                       this.Preview = true              
