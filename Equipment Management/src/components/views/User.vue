@@ -12,7 +12,6 @@
                     <div class="Img_container">
                       <img class="profile_img" v-bind:src="Avatar" alt="Avatar Pic" > <!-- Add img from firestore -->
                         <div class="middle">
-                          <!-- <div><button type="button" @click='editImgbtn' class="Img_edit_button">Edit</button></div> img Edit button -->
                           <label class="Img_edit_button" v-if="uploadValue == 0">
                             <input type="file" id=uploader @change="editImgbtn" accept="image/*"/>Edit
                           </label>
@@ -26,6 +25,9 @@
                   <div class="card-body">
                     <p class="mb-0"><strong class="pr-1">User ID: </strong> {{ Userid }}</p>
                     <p class="mb-0"><strong class="pr-1">Role: </strong> {{ Role }}</p>
+                    <p> <span id="SpecialSpan" style='color:red; font-size: large;' onmouseover="this.style.cursor='pointer'" onmouseout="this.style.cursor='default'" @click="DeleteAcc">
+                      <b><u>Delete account</u></b>
+                    </span> </p>
                   </div>
                 </div>
               </div>
@@ -228,7 +230,7 @@ export default defineComponent({
           this.showError(errMsg.value)    
         } 
         else{
-          updateEmail( getAuth().currentUser, document.getElementById('em').value).then(() => {
+          updateEmail( auth.currentUser, document.getElementById('em').value).then(() => {
                       storeFB.collection('users').doc(localStorage.local_uid).set({
                         email: document.getElementById('em').value,
                         firstname:document.getElementById('fn').value,
@@ -277,6 +279,7 @@ export default defineComponent({
                     });
           
       },
+
       showError: function showError(errorMSG){
         swal({
                   title: "Ooops",
@@ -284,11 +287,28 @@ export default defineComponent({
                   icon: "error",
                   dangerMode: true
                   })
-      }
+      },
+
+      DeleteAcc: function DeleteAcc() {
+        var user = firebase.auth().currentUser;
+        var swal_text = "User: "+ this.Firstname + " "+ this.Lastname +", was deleted successfully"
+        user.delete().then(function() {
+          var docRef = storeFB.collection("users").doc(localStorage.local_uid)
+          docRef.delete()
+          swal({
+                  title: "Success!!",
+                  text: swal_text,
+                  icon: "success",
+                  dangerMode: true
+          })
+        }).catch(function(error) {
+          console.log(error)
+        });
+        setTimeout(() => {this.$router.push({ path: '/', replace: true }) }, "500")
+      },
   }, 
 
 })
-
 
 
 function containsNumber(str) {
