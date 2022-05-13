@@ -115,7 +115,7 @@ export default defineComponent({
           sortable: true,
         },
         {
-          label: "Name",
+          label: "Equipment name",
           field: "name",
           width: "30%",
           sortable: true,
@@ -153,7 +153,7 @@ export default defineComponent({
       },
     });
 
-    const getData = ( order, sort) => {
+    const getData = ( ) => {
       table3.isLoading = true;
       let i=0
       firestore.getDocs(firestore.collection(storeFB, "inventory")).then((querySnapshot) => {
@@ -164,14 +164,14 @@ export default defineComponent({
           });
           table3.rows =inventoryVariants;
           table3.totalRecordCount = i;
-          table3.sortable.order = order;
-          table3.sortable.sort =sort;
+          table3.sortable.order = "id";
+          table3.sortable.sort = "asc";
           table3.isLoading = false;
       });
     };
 
     const doSearch = (offset, limit, order, sort) => {
-      console.log('doSearch')
+      console.log("doSearch:  " + offset, limit, order, sort)
     };
 
     /* OLD SAMPLE

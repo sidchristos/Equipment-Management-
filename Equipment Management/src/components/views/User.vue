@@ -93,7 +93,7 @@
           </tr>
           <tr>
             <th style="text-align: right; vertical-align: super;"> <b>Other Information: </b> </th>
-            <th> <p> <textarea id="inf" rows="5" cols="50" :value=Information > </textarea></p></th>
+            <th> <p> <textarea id="inf"  :value=Information rows="5" cols="50"> </textarea></p></th>
           </tr>
         </table>
         <p> 
@@ -108,30 +108,33 @@
 <script>
 import { ref , defineComponent} from 'vue'
 import firebase from "firebase/compat/app"
-import { storeFB,storageRef } from '../../config/firebase'
+import { storeFB } from '../../config/firebase'
 import 'firebase/compat/auth'
-import { getAuth,updateEmail  } from "firebase/auth"
+import { getAuth,updateEmail,onAuthStateChanged   } from "firebase/auth"
 import swal from 'sweetalert'
 
-const user = getAuth().currentUser;
-const userid = user.uid;
+const auth = getAuth();
+onAuthStateChanged(auth, (user) => {
+  if (user) {
+    const userid = user.uid;
+    localStorage.setItem('local_uid', userid);
+  }
+});
+
 let User_data = "";
-let Role= "";
 const errMsg = ref() 
 
-await storeFB.collection('users').doc(userid).get().then(snapshot  => {
+await storeFB.collection('users').doc(localStorage.local_uid).get().then(snapshot  => {
                             User_data = snapshot.data()   
                           })
                           .catch(error => {
                             console.log(error.code)
-                            this.showError(error.code)
                           });
 
 export default defineComponent({
-  name: 'Edit',
   data() {
     return {
-        Userid:userid,
+        Userid:localStorage.local_uid,
         Firstname:User_data.firstname,
         Lastname:User_data.lastname,
         Address:User_data.address,
@@ -145,7 +148,6 @@ export default defineComponent({
         imageData: null,
         uploadValue: 0
     }},
-
 
   methods: {
       editbtn: function editbtn() {
@@ -171,7 +173,7 @@ export default defineComponent({
         ()=>{
           storageRef.snapshot.ref.getDownloadURL().then((url)=>{
             this.Avatar =url
-            storeFB.collection('users').doc(userid).set({
+            storeFB.collection('users').doc(localStorage.local_uid).set({
                 email:User_data.email,
                 firstname:User_data.firstname,
                 lastname:User_data.lastname,
@@ -226,8 +228,8 @@ export default defineComponent({
           this.showError(errMsg.value)    
         } 
         else{
-          updateEmail(user, document.getElementById('em').value).then(() => {
-                      storeFB.collection('users').doc(userid).set({
+          updateEmail( getAuth().currentUser, document.getElementById('em').value).then(() => {
+                      storeFB.collection('users').doc(localStorage.local_uid).set({
                         email: document.getElementById('em').value,
                         firstname:document.getElementById('fn').value,
                         lastname:document.getElementById('ln').value,
@@ -253,7 +255,7 @@ export default defineComponent({
 
       getData: function getData() {
           storeFB.collection('users')
-                    .doc(userid)
+                    .doc(localStorage.local_uid)
                     .get()
                     .then(snapshot  => {
                       User_data = snapshot.data()  
