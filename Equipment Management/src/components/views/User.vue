@@ -10,7 +10,7 @@
                 <div class="card shadow-sm">
                   <div class="card-header bg-transparent text-center">
                     <div class="Img_container">
-                      <img class="profile_img" v-bind:src="Avatar" alt="Avatar Pic" > <!-- Add img from firestore -->
+                      <img class="profile_img" v-bind:src="Avatar" alt="Avatar Pic" >
                         <div class="middle">
                           <label class="Img_edit_button" v-if="uploadValue == 0">
                             <input type="file" id=uploader @change="editImgbtn" accept="image/*"/>Edit
@@ -114,42 +114,36 @@ import { storeFB } from '../../config/firebase'
 import 'firebase/compat/auth'
 import { getAuth,updateEmail,onAuthStateChanged   } from "firebase/auth"
 import swal from 'sweetalert'
+import router from "../../config/routes";
 
 const auth = getAuth();
 onAuthStateChanged(auth, (user) => {
   if (user) {
     const userid = user.uid;
-    localStorage.setItem('local_uid', userid);
+    sessionStorage .setItem('local_uid', userid);
   }
 });
-
 let User_data = "";
 const errMsg = ref() 
-
-await storeFB.collection('users').doc(localStorage.local_uid).get().then(snapshot  => {
-                            User_data = snapshot.data()   
-                          })
-                          .catch(error => {
-                            console.log(error.code)
-                          });
 
 export default defineComponent({
   data() {
     return {
-        Userid:localStorage.local_uid,
-        Firstname:User_data.firstname,
-        Lastname:User_data.lastname,
-        Address:User_data.address,
-        Phone:User_data.phone,
-        Email:User_data.email,
-        Role:User_data.role,
-        Information:User_data.infromation,
-        Avatar:User_data.avatar,
+        Userid:sessionStorage .local_uid,
+        Firstname:null,
+        Lastname:null,
+        Address:null,
+        Phone:null,
+        Email:null,
+        Role:null,
+        Information:null,
+        Avatar:null,
         Preview:true,
         picture: null,
         imageData: null,
         uploadValue: 0
-    }},
+    }
+  },
 
   methods: {
       editbtn: function editbtn() {
@@ -175,13 +169,13 @@ export default defineComponent({
         ()=>{
           storageRef.snapshot.ref.getDownloadURL().then((url)=>{
             this.Avatar =url
-            storeFB.collection('users').doc(localStorage.local_uid).set({
+            storeFB.collection('users').doc(sessionStorage .local_uid).set({
                 email:User_data.email,
                 firstname:User_data.firstname,
                 lastname:User_data.lastname,
                 phone:User_data.phone,
                 address:User_data.address,
-                infromation:User_data.infromation,
+                information:User_data.information,
                 role:User_data.role,
                 avatar:url
             })
@@ -231,13 +225,13 @@ export default defineComponent({
         } 
         else{
           updateEmail( auth.currentUser, document.getElementById('em').value).then(() => {
-                      storeFB.collection('users').doc(localStorage.local_uid).set({
+                      storeFB.collection('users').doc(sessionStorage .local_uid).set({
                         email: document.getElementById('em').value,
                         firstname:document.getElementById('fn').value,
                         lastname:document.getElementById('ln').value,
                         phone:document.getElementById('ph').value,
                         address:document.getElementById('ad').value,
-                        infromation:document.getElementById('inf').value,
+                        information:document.getElementById('inf').value,
                         role:User_data.role,
                         avatar:User_data.avatar
                       })
@@ -257,7 +251,7 @@ export default defineComponent({
 
       getData: function getData() {
           storeFB.collection('users')
-                    .doc(localStorage.local_uid)
+                    .doc(sessionStorage.local_uid)
                     .get()
                     .then(snapshot  => {
                       User_data = snapshot.data()  
@@ -266,16 +260,16 @@ export default defineComponent({
                       this.Address=User_data.address,
                       this.Phone=User_data.phone,
                       this.Email=User_data.email, 
-                      this.Infromation=User_data.infromation, // TODO: async issue with loading data
+                      this.Information=User_data.information,
                       this.role=User_data.role,
-                      this.avatar=User_data.avatar                                
+                      this.Avatar=User_data.avatar                              
                     })
                     .catch(error => {
                       console.log(error.code)
                       this.showError(error.code)
                     })
                     .finally(() => {
-                      this.Preview = true              
+                      this.Preview = true           
                     });
           
       },
@@ -291,25 +285,43 @@ export default defineComponent({
 
       DeleteAcc: function DeleteAcc() {
         var user = firebase.auth().currentUser;
-        var swal_text = "User: "+ this.Firstname + " "+ this.Lastname +", was deleted successfully"
-        user.delete().then(function() {
-          var docRef = storeFB.collection("users").doc(localStorage.local_uid)
-          docRef.delete()
+        var swal_text = "User : "+ this.Firstname + " "+ this.Lastname +", was deleted successfully"
           swal({
-                  title: "Success!!",
-                  text: swal_text,
-                  icon: "success",
-                  dangerMode: true
-          })
-        }).catch(function(error) {
-          console.log(error)
-        });
-        setTimeout(() => {this.$router.push({ path: '/', replace: true }) }, "500")
+                title: "Are you sure?",
+                text: "You will not be able to recover your account",
+                icon: "warning",
+                buttons: [
+                  'Cancel',
+                  'Accept'
+                ],
+                dangerMode: true,
+              }).then(function(isConfirm) {
+                if (isConfirm) {
+                  swal({
+                    title: 'Deleted!',
+                    text: swal_text,
+                    icon: 'success',
+                    dangerMode: true
+                  }).then(function() {
+                      user.delete().then(function() {
+                        var docRef = storeFB.collection("users").doc(sessionStorage .local_uid)
+                        docRef.delete()
+                        router.push({ path: '/', replace: true })
+                    }).catch(function(error) {
+                      console.log(error)
+                    });
+                  });
+                } 
+              })
       },
+
   }, 
 
-})
+  mounted(){
+    this.getData()
+  }
 
+})
 
 function containsNumber(str) {
   return /\d/.test(str);

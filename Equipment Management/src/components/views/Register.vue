@@ -54,7 +54,7 @@ const register = () => {
   } 
   else if (address.value === "" || address.value.length < 8){
     if (address.value === "") errMsg.value='Address cannot be empty'
-    else if (address.value.length < 5) errMsg.value='Address must be at least 8 characters'  
+    else if (address.value.length < 8) errMsg.value='Address must be at least 8 characters'  
     else errMsg.value='Please insert a proper address'
     showError(errMsg.value)            
   }
@@ -75,7 +75,7 @@ const register = () => {
           phone:phone.value,
           address:address.value,
           role:'user',
-          infromation:'Add a short note',
+          information:'Add a short note',
           avatar: 'https://firebasestorage.googleapis.com/v0/b/equipment-management-1726d.appspot.com/o/png-computer-icons-user-profile-clip-art-priest_thumbnail.png?alt=media&token=8292d069-b26d-45fe-913f-1ab18538f226'
         })
         
