@@ -112,7 +112,7 @@ export default defineComponent({
           try{
             storeFB.collection('inventory').doc().set({
                             owner: this.Owner,
-                            name:this.Name,
+                            name:this.Name.toUpperCase(),
                             category:this.Category,
                             location:this.Location,
                             description:this.Description,

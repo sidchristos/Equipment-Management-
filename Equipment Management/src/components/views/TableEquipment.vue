@@ -172,13 +172,14 @@ export default defineComponent({
     };
 
     const doSearch = (offset, limit, order, sort) => {
-              console.log("doSearch:  " + offset, limit, order, sort)               //Log
+              console.log("doSearch :  " + offset, limit, order, sort)               //Log
       table3.isLoading = true;
-      inventoryVariants=[]
+      inventoryVariants=[];
       let i=0;
       let DBsearch = storeFB.collection('inventory');
+                      console.log("isReSearch 1 :  " + table3.isReSearch)                     //Log
       table3.isReSearch = offset == undefined ? true : false;
-                console.log("isReSearch:  " + table3.isReSearch)                     //Log
+                console.log("isReSearch 2 :  " + table3.isReSearch)                     //Log
       DBsearch.orderBy(order, sort).limit(limit).get().then(querySnapshot => {
         querySnapshot.forEach(doc => {
                   let dict = { ...doc.data(), InvID: doc.id, id:i+1};
