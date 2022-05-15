@@ -156,38 +156,46 @@ export default defineComponent({
       },
 
       editImgbtn: function editImgbtn(event) {
+      var pattern = /image-*/;
       this.uploadValue=0;
       this.picture=null;
       this.imageData = event.target.files[0];
-      const storageRef=firebase.storage().ref(`${this.imageData.name}`).put(this.imageData);
-        
-        storageRef.on(`state_changed`,snapshot=>{
-          this.uploadValue = 1;
-        }, 
-        error=>{
-          console.log(error.message)
-        },
-        ()=>{
-          storageRef.snapshot.ref.getDownloadURL().then((url)=>{
-            this.Avatar =url
-            storeFB.collection('users').doc(sessionStorage .local_uid).set({
-                email:User_data.email,
-                firstname:User_data.firstname,
-                lastname:User_data.lastname,
-                phone:User_data.phone,
-                address:User_data.address,
-                information:User_data.information,
-                role:User_data.role,
-                avatar:url
-            })
-            setTimeout(() => { this.uploadValue=25; }, "300")
-            setTimeout(() => { this.uploadValue=50; }, "400")
-            setTimeout(() => { this.uploadValue=75; }, "500")
-            this.getData()
-            setTimeout(() => { this.uploadValue=100; }, "800")
-            setTimeout(() => { this.uploadValue=0; }, "2000")
-          });
-        });
+        if( this.imageData.size > 2097152){
+          this.showError("Maximun file size is 2MB, try an other image")
+        }else  if (! this.imageData.type.match(pattern)){
+          this.showError("Only images can be uploaded")
+        }
+        else{
+          const storageRef=firebase.storage().ref(`${this.imageData.name}`).put(this.imageData);
+            
+            storageRef.on(`state_changed`,snapshot=>{
+              this.uploadValue = 1;
+            }, 
+            error=>{
+              console.log(error.message)
+            },
+            ()=>{
+              storageRef.snapshot.ref.getDownloadURL().then((url)=>{
+                this.Avatar =url
+                storeFB.collection('users').doc(sessionStorage .local_uid).set({
+                    email:User_data.email,
+                    firstname:User_data.firstname,
+                    lastname:User_data.lastname,
+                    phone:User_data.phone,
+                    address:User_data.address,
+                    information:User_data.information,
+                    role:User_data.role,
+                    avatar:url
+                })
+                setTimeout(() => { this.uploadValue=25; }, "300")
+                setTimeout(() => { this.uploadValue=50; }, "400")
+                setTimeout(() => { this.uploadValue=75; }, "500")
+                this.getData()
+                setTimeout(() => { this.uploadValue=100; }, "800")
+                setTimeout(() => { this.uploadValue=0; }, "2000")
+              });
+            });
+        }
       },
 
       savebtn: function savebtn() {
