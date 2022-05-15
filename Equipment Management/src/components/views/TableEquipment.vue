@@ -41,8 +41,8 @@
 import { defineComponent, reactive, onMounted  } from "vue";
 import TableLite from "./TableLite.vue";
 import firebase from "firebase/compat/app"
-import { storeFB,storageRef } from '../../config/firebase'
-import { query, collection, getDocs } from "firebase/firestore"
+import { storeFB } from '../../config/firebase'
+import { collection, query, orderBy, startAfter, limit, getDocs } from "firebase/firestore"
 import * as firestore from "firebase/firestore";
 
 /* OLD SAMPLE
@@ -102,22 +102,21 @@ export default defineComponent({
       isReSearch: false,
       columns: [
         {
-          label: "ID",
+          label: "#",
           field: "id",
           width: "3%",
-          sortable: true,
           isKey: true,
+        },
+                {
+          label: "Equipment name",
+          field: "name",
+          width: "30%",
+          sortable: true,
         },
         {
           label: "Location",
           field: "location",
           width: "20%",
-          sortable: true,
-        },
-        {
-          label: "Equipment name",
-          field: "name",
-          width: "30%",
           sortable: true,
         },
         {
@@ -142,7 +141,7 @@ export default defineComponent({
       rows: [],
       totalRecordCount: 0,
       sortable: {
-        order: "id",
+        order: "name",
         sort: "asc",
       },
       messages: {
@@ -155,23 +154,42 @@ export default defineComponent({
 
     const getData = ( ) => {
       table3.isLoading = true;
-      let i=0
-      firestore.getDocs(firestore.collection(storeFB, "inventory")).then((querySnapshot) => {
-          querySnapshot.forEach((doc) => {
-            let dict = { ...doc.data(), InvID: doc.id, id:i+1};
-            inventoryVariants.push(dict);
-            i++
-          });
-          table3.rows =inventoryVariants;
-          table3.totalRecordCount = i;
-          table3.sortable.order = "id";
-          table3.sortable.sort = "asc";
-          table3.isLoading = false;
+      let i=0;
+      
+      let DB = storeFB.collection('inventory');
+      DB.orderBy('name', 'asc').get().then(querySnapshot => {
+        querySnapshot.forEach(doc => {
+                  let dict = { ...doc.data(), InvID: doc.id, id:i+1};
+                  inventoryVariants.push(dict);
+                  i++
+                });
+                table3.rows =inventoryVariants.slice(0,10);
+                table3.totalRecordCount = i;
+                table3.sortable.order = "name";
+                table3.sortable.sort = "asc";
+                table3.isLoading = false;
       });
     };
 
     const doSearch = (offset, limit, order, sort) => {
-      console.log("doSearch:  " + offset, limit, order, sort)
+              console.log("doSearch:  " + offset, limit, order, sort)               //Log
+      table3.isLoading = true;
+      inventoryVariants=[]
+      let i=0;
+      let DBsearch = storeFB.collection('inventory');
+      table3.isReSearch = offset == undefined ? true : false;
+                console.log("isReSearch:  " + table3.isReSearch)                     //Log
+      DBsearch.orderBy(order, sort).limit(limit).get().then(querySnapshot => {
+        querySnapshot.forEach(doc => {
+                  let dict = { ...doc.data(), InvID: doc.id, id:i+1};
+                  inventoryVariants.push(dict);
+                  i++
+                });
+                table3.rows =inventoryVariants;
+                table3.sortable.order = order;
+                table3.sortable.sort = sort;
+                table3.isLoading = false;
+      });
     };
 
     /* OLD SAMPLE
