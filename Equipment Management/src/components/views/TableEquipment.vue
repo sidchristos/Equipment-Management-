@@ -174,7 +174,7 @@ export default defineComponent({
     const doSearch = (offset, limit, order, sort) => {
               console.log("doSearch:  " + offset, limit, order, sort)               //Log
       table3.isLoading = true;
-      inventoryVariants=[]
+      inventoryVariants=[];
       let i=0;
       let DBsearch = storeFB.collection('inventory');
       table3.isReSearch = offset == undefined ? true : false;
@@ -185,6 +185,7 @@ export default defineComponent({
                   inventoryVariants.push(dict);
                   i++
                 });
+                console.log("inventoryVariants: %o", inventoryVariants)                     //Log
                 table3.rows =inventoryVariants;
                 table3.sortable.order = order;
                 table3.sortable.sort = sort;
