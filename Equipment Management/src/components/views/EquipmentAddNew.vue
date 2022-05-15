@@ -10,10 +10,10 @@
               <th style="text-align: right; padding-right: 1%;"> <b>Category: </b> </th>
               <th> <p> 
                       <select v-model="Category" >
-                        <option disabled value="">Please select category</option>
-                        <option>Electronics</option>
-                        <option>Hardware</option>
-                        <option>Software</option>
+                        <option disabled value="">Please select Category</option>
+                        <option v-for="category in category" :value="category.value" v-bind:key="category">
+                          {{ category.text }}
+                        </option>
                       </select>
               </p></th>
             </tr>
@@ -22,9 +22,9 @@
               <th> <p> 
                       <select v-model="Location" >
                         <option disabled value="">Please select Location</option>
-                        <option>Office</option>
-                        <option>Storage room</option>
-                        <option>Hall</option>
+                        <option v-for="location in location" :value="location.value" v-bind:key="location">
+                          {{ location.text }}
+                        </option>
                       </select>
               </p></th>
             </tr>
@@ -33,9 +33,9 @@
               <th> <p> 
                       <select v-model="State" >
                         <option disabled value="">Please select State</option>
-                        <option>Active</option>
-                        <option>Maintance</option>
-                        <option>Not working</option>
+                        <option v-for="state in state" :value="state.value" v-bind:key="state">
+                          {{ state.text }}
+                        </option>
                       </select>
               </p></th>
             </tr>         
@@ -59,23 +59,36 @@ import 'firebase/compat/auth'
 import { getAuth } from "firebase/auth"
 import swal from 'sweetalert'
 
-const userid = getAuth().currentUser.uid;
 const errMsg = ref() 
 var d = new Date();
 var datestring = d.getDate()  + "-" + (d.getMonth()+1) + "-" + d.getFullYear() 
-
 
 export default defineComponent({
   name: 'Edit',
   data() {
     return {
-        Owner:userid,
+        Owner:sessionStorage.local_uid,
         Name:null,
         Category:null,
         Location:null,
         Description:null,     
         Date:datestring,
-        State:null
+        State:null,
+        category: [
+          { text: 'Electronics', value: 'Electronics' },
+          { text: 'Hardware', value: 'Hardware' },
+          { text: 'Software', value: 'Software' }
+        ],
+        location: [
+          { text: 'Office', value: 'Office' },
+          { text: 'Storage room', value: 'Storage room' },
+          { text: 'Hall', value: 'Hall' }
+        ],        
+        state: [
+          { text: 'Active', value: 'Active' },
+          { text: 'Maintance', value: 'Maintance' },
+          { text: 'Not working', value: 'Not working' }
+        ]
     }
   },
 
@@ -83,6 +96,7 @@ export default defineComponent({
       cancelbtn: function cancelbtn() {
         this.$router.push({ path: '/dashboard', replace: true })
       },
+
       savebtn: function savebtn() {
         if( this.Name == null){
           this.showError("Please enter a Name")
@@ -119,12 +133,14 @@ export default defineComponent({
           }  
         }      
       },
+
       clearData:function clearData(){
             this.Name= null,
             this.Category= null,
             this.Location= null,
             this.Description= null
       },
+
       showError:function showError(errorMSG){
         swal({
                   title: "Ooops",
@@ -138,7 +154,7 @@ export default defineComponent({
   setup() {
     var OwnerName=''
     const getOwnerName = ( ) => {
-      storeFB.collection('users').doc(userid).get().then(snapshot  => {
+      storeFB.collection('users').doc(sessionStorage.local_uid).get().then(snapshot  => {
                              OwnerName = snapshot.data().firstname +' '+ snapshot.data().lastname  
                           })
                           .catch(error => {
