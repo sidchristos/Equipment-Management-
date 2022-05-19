@@ -1,6 +1,6 @@
 <template>
 <div>
-    <h1> User Profile </h1>
+  <h1> User Profile </h1>
     <div>      
       <div v-if="Preview"> 
         <div class="user-profile py-4">
@@ -270,7 +270,7 @@ export default defineComponent({
                       this.Phone=User_data.phone,
                       this.Email=User_data.email, 
                       this.Information=User_data.information,
-                      this.role=User_data.role,
+                      this.Role=User_data.role,
                       this.Avatar=User_data.avatar                              
                     })
                     .catch(error => {

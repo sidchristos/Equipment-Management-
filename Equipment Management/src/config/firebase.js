@@ -13,7 +13,8 @@ let firebaseConfig = {
   appId: "1:24480812686:web:9117747d04497c6a4203df"
 };
 
-export let appFB   = firebase.initializeApp(firebaseConfig);
-export const storeFB = firebase.firestore();
+export const appFB      = firebase.initializeApp(firebaseConfig);
+export const storeFB    = firebase.firestore();
 export const storageRef = firebase.storage().ref();
+export const perf       = firebase.performance;
 //export const dbFB = firebase.database();

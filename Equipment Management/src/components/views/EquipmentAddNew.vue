@@ -53,10 +53,8 @@
 
 <script>
 import { defineComponent, ref } from "vue";
-import firebase from "firebase/compat/app"
 import { storeFB } from '../../config/firebase'
 import 'firebase/compat/auth'
-import { getAuth } from "firebase/auth"
 import swal from 'sweetalert'
 
 const errMsg = ref() 
