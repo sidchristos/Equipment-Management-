@@ -31,7 +31,7 @@ const router = createRouter({
             component: () => import('../components/views/EquipmentAddNew.vue'),
         },
         {
-            path: '/user', name: 'user',
+            path: '/user/:id', name: 'user',
             component: () => import('../components/views/User.vue'),
         }
     ]
