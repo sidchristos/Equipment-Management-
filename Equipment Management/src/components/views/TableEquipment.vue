@@ -40,44 +40,8 @@
 <script>
 import { defineComponent, reactive, onMounted  } from "vue";
 import TableLite from "./TableLite.vue";
-import firebase from "firebase/compat/app"
 import { storeFB } from '../../config/firebase'
-import { collection, query, orderBy, startAfter, limit, getDocs } from "firebase/firestore"
-import * as firestore from "firebase/firestore";
-
-/* OLD SAMPLE
-const sampleData1 = (offst, limit) => {
-  offst = offst + 1;
-  let data = [];
-  for (let i = offst; i <= limit; i++) {
-    data.push({
-      id: i,
-      location:"Office",
-      name: "TEST" + i,
-      category: "Electronics",
-      state: "Active",
-      owner: "Christos Stefanou"
-    });
-  }
-  return data;
-};
-
-const sampleData2 = (offst, limit) => {
-  let data = [];
-  for (let i = limit; i > offst; i--) {
-    data.push({
-      id: i,
-      location:"Storage room",
-      name: "TESTY" + i,
-      category: "Hardware",
-      state: "Maintance",
-      owner: "Giorgos Papadopoulos"
-    });
-  }
-  return data;
-};
-*/
-
+import { collection, query, orderBy, startAfter, limit, getDocs } from "firebase/firestore";
 
 export default defineComponent({
   name: "App",
@@ -155,7 +119,6 @@ export default defineComponent({
     const getData = ( ) => {
       table3.isLoading = true;
       let i=0;
-      
       let DB = storeFB.collection('inventory');
       DB.orderBy('name', 'asc').get().then(querySnapshot => {
         querySnapshot.forEach(doc => {
@@ -171,17 +134,18 @@ export default defineComponent({
       });
     };
 
-    const doSearch = (offset, limit, order, sort) => {
-              console.log("doSearch :  " + offset, limit, order, sort)               //Log
+    const doSearch = (offset, limit, order, sort) => {                                                                                 //TODO: PAGINATION
+      console.log("   >>>doSearch< " + 'offset: '+ offset+ ' - limit: '+ limit+ ' - order: '+ order+ ' - sort: '+ sort)                //Log
       table3.isLoading = true;
       inventoryVariants=[];
       let i=0;
+      let j=0;
       let DBsearch = storeFB.collection('inventory');
-                      console.log("isReSearch 1 :  " + table3.isReSearch)                     //Log
-      table3.isReSearch = offset == undefined ? true : false;
-                console.log("isReSearch 2 :  " + table3.isReSearch)                     //Log
-      DBsearch.orderBy(order, sort).limit(limit).get().then(querySnapshot => {
-        querySnapshot.forEach(doc => {
+      table3.isReSearch = offset == undefined ? true : false; 
+      console.log("   >>>isReSearch :  " + table3.isReSearch)                                                                          //Log
+
+      const dosearch= DBsearch.orderBy(order, sort).limit(limit).get()
+      dosearch.then(querySnapshot => { querySnapshot.forEach(doc => {
                   let dict = { ...doc.data(), InvID: doc.id, id:i+1};
                   inventoryVariants.push(dict);
                   i++
@@ -191,27 +155,18 @@ export default defineComponent({
                 table3.sortable.sort = sort;
                 table3.isLoading = false;
       });
-    };
 
-    /* OLD SAMPLE
-    const doSearch = (offset, limit, order, sort) => {
-      table3.isLoading = true;
-      setTimeout(() => {
-        table3.isReSearch = offset == undefined ? true : false;
-        if (offset >= 10 || limit >= 20) {
-          limit = 20;
-        }
-        if (sort == "asc") {
-          table3.rows = sampleData1(offset, limit);
-        } else {
-          table3.rows = sampleData2(offset, limit);
-        }
-        table3.totalRecordCount = 20;
-        table3.sortable.order = order;
-        table3.sortable.sort = sort;
-      }, 600);
+      //Test pagination
+      var ref = DBsearch.orderBy(order, sort).startAt(offset).limit(limit).get()
+      ref.then(querySnapshot => { querySnapshot.forEach(doc => {
+                  let dict2 = { ...doc.data(), InvID: doc.id, id:j+1};
+                  console.log(j+1+'-'+dict2.name)                                                                                      //Log
+                  j++
+          });
+          console.log(">>>>>>>>>>>>>>>>>>>>END<<<<<<<<<<<<<<<<<<<<")
+      });
+      //Test
     };
-    */
 
     return {
       table3,

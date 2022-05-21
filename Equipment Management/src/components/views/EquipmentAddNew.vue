@@ -53,10 +53,8 @@
 
 <script>
 import { defineComponent, ref } from "vue";
-import firebase from "firebase/compat/app"
 import { storeFB } from '../../config/firebase'
 import 'firebase/compat/auth'
-import { getAuth } from "firebase/auth"
 import swal from 'sweetalert'
 
 const errMsg = ref() 
@@ -110,7 +108,7 @@ export default defineComponent({
           this.showError("Please choose a state")
         }else{
           try{
-            storeFB.collection('inventory').doc().set({
+            storeFB.collection('inventory').add({
                             owner: this.Owner,
                             name:this.Name.toUpperCase(),
                             category:this.Category,
@@ -119,6 +117,13 @@ export default defineComponent({
                             date:this.Date,
                             state:this.State,
                             owner_name:this.getOwnerName()
+              }).then(docRef => {
+                  console.log("Document written with ID: ", docRef.id);
+                  storeFB.collection('inventory').doc(docRef.id).collection('history').doc(docRef.id).set({
+                    date:this.Date,
+                    createdby:this.Owner,
+                    type:'Created'
+                  })
               })
               swal({
                             title: "Success!",

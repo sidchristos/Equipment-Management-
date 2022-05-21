@@ -1,6 +1,8 @@
 import firebase from "firebase/compat/app";
 import 'firebase/compat/firestore';
 import 'firebase/compat/storage'; 
+import 'firebase/compat/analytics';
+import 'firebase/compat/performance';
 //import 'firebase/compat/database';
 
 let firebaseConfig = {
@@ -13,7 +15,9 @@ let firebaseConfig = {
   appId: "1:24480812686:web:9117747d04497c6a4203df"
 };
 
-export let appFB   = firebase.initializeApp(firebaseConfig);
-export const storeFB = firebase.firestore();
-export const storageRef = firebase.storage().ref();
+export const appFB        = firebase.initializeApp(firebaseConfig);
+export const storeFB      = firebase.firestore();
+export const storageRef   = firebase.storage().ref();
+export const performance  = firebase.performance();
+export const analytics    = firebase.analytics();
 //export const dbFB = firebase.database();
