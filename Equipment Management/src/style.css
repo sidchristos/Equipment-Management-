@@ -283,3 +283,16 @@ progress::-webkit-progress-inner-element {
   -ms-user-select: none;      /* IE 10+ */
    user-select: none;  
 }
+
+.HistoryTable{
+  table-layout: fixed;
+  width: 100%;
+  border-collapse: collapse;
+  text-align: left;
+}
+
+.trHistory{
+  border-top: 10px solid;
+  border-bottom: 10px solid;
+  border-color: transparent;
+}
