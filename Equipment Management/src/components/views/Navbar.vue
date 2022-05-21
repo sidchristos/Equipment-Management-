@@ -6,7 +6,7 @@
             <router-link to="/dashboard"> Dashboard </router-link> |
         </span>
         <span v-if="isLoggedIn"> 
-            <router-link to="/user"> User Profile </router-link>
+            <router-link :to='{ name: "user",  params: { id: this.uid }}'> User Profile </router-link>
             <button @click="signOut" id="logout-button"> Logout <span class="glyphicon glyphicon-log-out"></span></button> 
         </span>
         <span v-else>
@@ -27,12 +27,15 @@ import { useRouter } from 'vue-router'
 import swal from 'sweetalert';
 const router = useRouter()
 const isLoggedIn = ref(true)
+let uid = ref('null')
 
 firebase.auth().onAuthStateChanged(function(user) {
     if (user) {
       isLoggedIn.value = true 
+      uid.value=firebase.auth().currentUser.uid
     } else {
       isLoggedIn.value = false 
+
     }
 })
 
