@@ -1,7 +1,10 @@
 <template>
   <div>
     <h1> Equipment Profile </h1>
-    <div> 
+    <div v-if="Loading">
+        <h2>Loading...</h2>
+    </div>
+    <div v-else> 
       <p> ID : {{url_data}} </p><hr>     
       <div v-if="Preview"> 
         <div>   
@@ -15,16 +18,19 @@
         </div> 
         <hr>
         <div>
-          <h1>History</h1>
+          <details>
+          <summary style="cursor: pointer;"><h1 style="cursor: pointer;">History +</h1></summary><br>
           <table class="HistoryTable">
             <tr> <th >#</th><th>Date</th><th>Type</th><th>Created by</th></tr>
             <tr v-for="(value,index) in history" v-bind:key="history" class="trHistory">
               <td width="5%">{{ index+1 }}</td>
               <td >{{ value.date }}</td>
               <td width="20%">{{ value.type }}</td>
+
               <td >{{ value.createdby }} </td>
             </tr>
           </table>
+          </details>
         </div>
         <br><hr><p>  <button @click='backbtn' class='button'> Back </button> <button @click='deletebtn' class='button'> Delete </button> <button @click='editbtn' class='button'> Edit </button></p>
       </div>
@@ -107,6 +113,8 @@ export default defineComponent({
       url_data: null,
       Preview:true,
       DateH:datestring,
+      Loading:true,
+
       inv:[
             {Category:null},
             {DateI:null},
@@ -162,7 +170,8 @@ export default defineComponent({
                       this.showError(error.code)
                     })
                     .finally(() => {
-                      this.Preview = true           
+                      this.Preview = true  
+                      this.Loading = false         
                     });
           
       },
