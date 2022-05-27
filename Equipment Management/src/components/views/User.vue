@@ -10,7 +10,7 @@
                 <div class="card shadow-sm">
                   <div class="card-header bg-transparent text-center">
                     <div class="Img_container">
-                      <img class="profile_img" v-bind:src="Avatar" alt="Avatar Pic" >
+                      <img class="profile_img" v-bind:src="Avatar" alt="Avatar Pic" @error="setAltImg">
                         <div class="middle">
                           <label class="Img_edit_button" v-if="uploadValue == 0">
                             <input type="file" id=uploader @change="editImgbtn" accept="image/*"/>Edit
@@ -140,11 +140,15 @@ export default defineComponent({
         Preview:true,
         picture: null,
         imageData: null,
-        uploadValue: 0
+        uploadValue: 0,
     }
   },
 
   methods: {
+      setAltImg(event) { 
+        event.target.src = "https://cdn0.iconfinder.com/data/icons/shift-free/32/Error-512.png" 
+      },
+
       editbtn: function editbtn() {
         this.Preview = false
       },
@@ -175,7 +179,7 @@ export default defineComponent({
             ()=>{
               storageRef.snapshot.ref.getDownloadURL().then((url)=>{
                 this.Avatar =url
-                storeFB.collection('users').doc(sessionStorage .local_uid).set({
+                storeFB.collection('users').doc(sessionStorage.local_uid).set({
                     email:User_data.email,
                     firstname:User_data.firstname,
                     lastname:User_data.lastname,
@@ -232,7 +236,7 @@ export default defineComponent({
         } 
         else{
           updateEmail( auth.currentUser, document.getElementById('em').value).then(() => {
-                      storeFB.collection('users').doc(sessionStorage .local_uid).set({
+                      storeFB.collection('users').doc(sessionStorage.local_uid).set({
                         email: document.getElementById('em').value,
                         firstname:document.getElementById('fn').value,
                         lastname:document.getElementById('ln').value,

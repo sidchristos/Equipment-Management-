@@ -59,7 +59,11 @@ import swal from 'sweetalert'
 
 const errMsg = ref() 
 var d = new Date();
-var datestring = d.getDate()  + "-" + (d.getMonth()+1) + "-" + d.getFullYear() 
+const TimeAmPm = d.toLocaleTimeString('en-US', {
+  hour: '2-digit',
+  minute: '2-digit',
+});
+var datestring = d.getDate()  + "-" + (d.getMonth()+1) + "-" + d.getFullYear() + ", " + TimeAmPm;
 
 export default defineComponent({
   name: 'Edit',

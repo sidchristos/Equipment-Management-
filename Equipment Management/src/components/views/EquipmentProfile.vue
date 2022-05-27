@@ -22,10 +22,11 @@
           <summary style="cursor: pointer;"><h1 style="cursor: pointer;">History +</h1></summary><br>
           <table class="HistoryTable">
             <tr> <th >#</th><th>Date</th><th>Type</th><th>Created by</th></tr>
-            <tr v-for="(value,index) in history" v-bind:key="value" class="trHistory">
-              <td >{{ index+1 }} </td>
-              <td >{{ value.date }} </td>
-              <td >{{ value.type }} </td>
+            <tr v-for="(value,index) in history" v-bind:key="history" class="trHistory">
+              <td width="5%">{{ index+1 }}</td>
+              <td >{{ value.date }}</td>
+              <td width="20%">{{ value.type }}</td>
+
               <td >{{ value.createdby }} </td>
             </tr>
           </table>
@@ -91,11 +92,19 @@
 </template>
 
 <script>
-import { defineComponent } from "vue";
+import { ref,defineComponent } from "vue";
 import { storeFB } from '../../config/firebase'
 import swal from 'sweetalert'
 
 let Inv_data = "";
+const errMsg = ref() 
+var d = new Date();
+const TimeAmPm = d.toLocaleTimeString('en-US', {
+  hour: '2-digit',
+  minute: '2-digit',
+});
+var datestring = d.getDate()  + "-" + (d.getMonth()+1) + "-" + d.getFullYear() + ", " + TimeAmPm;
+
 export default defineComponent({
   name: "Equipment Profile-component",
 
@@ -103,7 +112,9 @@ export default defineComponent({
    return{
       url_data: null,
       Preview:true,
+      DateH:datestring,
       Loading:true,
+
       inv:[
             {Category:null},
             {DateI:null},
@@ -167,11 +178,12 @@ export default defineComponent({
 
       getDataHistory: function getDataHistory(){
         let i=0;
+        this.history=[];
         storeFB.collection('inventory').doc(this.url_data).collection('history').orderBy('date', 'asc')
                .get().then(Snapshot => { Snapshot.forEach(doc => {
                       let dict = { ...doc.data(), id:i+1};
                       this.history.push(dict)
-                    })
+                      })
                     })
                     .catch(error => {
                       console.log(error.code)
@@ -218,7 +230,38 @@ export default defineComponent({
       },
       
       savebtn: function savebtn() {
-        alert(" Save() under construction")
+          if(document.getElementById('nam').value < 4){
+              errMsg.value='Name must be at least 4 characters'
+              this.showError(errMsg.value)
+          }else if(document.getElementById('own').value == ""){
+              errMsg.value="Please insert owner's name"
+              this.showError(errMsg.value)
+          }else{
+            storeFB.collection('inventory').doc(this.url_data).set({
+              name:document.getElementById('nam').value,
+              owner_name:document.getElementById('own').value,
+              description:document.getElementById('des').value,            
+              category:this.inv.Category,
+              location:this.inv.Location,
+              state:this.inv.State,
+              owner:this.inv.Owner,
+              date:this.inv.DateI
+            }).then(docRef => {
+                  storeFB.collection('inventory').doc(this.url_data).collection('history').doc().set({
+                    date:this.DateH,
+                    createdby:sessionStorage.local_uid,
+                    type:'Edited'
+                  })
+            }) 
+            this.getData();
+            this.getDataHistory();
+            swal({
+              title: "Success!",
+              text: "Equipment info have been saved",
+              icon: "success",
+              dangerMode: true
+            });  
+          }  
       },
 
       cancelbtn: function cancelbtn() {

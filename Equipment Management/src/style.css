@@ -253,7 +253,8 @@ progress::-webkit-progress-inner-element {
 
 .buttonAddNew {
   position: relative;
-  right: -71.5%;
+  left: 72%;
+  top: 15%;
   background-color: #f4511e;
   border-color: #000000;
   border-radius: 50px;
@@ -269,7 +270,6 @@ progress::-webkit-progress-inner-element {
   -moz-user-select: none;     /* Firefox all */
   -ms-user-select: none;      /* IE 10+ */
    user-select: none;  
-
 }
 
 .Btndiv{
@@ -285,23 +285,15 @@ progress::-webkit-progress-inner-element {
 }
 
 .HistoryTable{
-  table-layout: fixed;
-  width: 95%;
+
+  table-layout: auto;
+  width: 100%;
   border-collapse: collapse;
   text-align: left;
 }
 
 .trHistory{
-  border-top: 10px solid;
-  border-bottom: 10px solid;
+  border-top: 8x solid;
+  border-bottom: 8px solid;
   border-color: transparent;
-}
-
-.hide:target + .show,
-.hide:target ~ .details {
-  display: block;
-}
-
-details summary > * {
-  display: inline;
 }
