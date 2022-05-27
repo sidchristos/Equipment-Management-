@@ -1,7 +1,10 @@
 <template>
   <div>
     <h1> Equipment Profile </h1>
-    <div> 
+    <div v-if="Loading">
+        <h2>Loading...</h2>
+    </div>
+    <div v-else> 
       <p> ID : {{url_data}} </p><hr>     
       <div v-if="Preview"> 
         <div>   
@@ -15,16 +18,18 @@
         </div> 
         <hr>
         <div>
-          <h1>History</h1>
+          <details>
+          <summary style="cursor: pointer;"><h1 style="cursor: pointer;">History +</h1></summary><br>
           <table class="HistoryTable">
             <tr> <th >#</th><th>Date</th><th>Type</th><th>Created by</th></tr>
             <tr v-for="(value,index) in history" v-bind:key="value" class="trHistory">
-              <td > {{ index+1 }} </td>
+              <td >{{ index+1 }} </td>
               <td >{{ value.date }} </td>
               <td >{{ value.type }} </td>
               <td >{{ value.createdby }} </td>
             </tr>
           </table>
+          </details>
         </div>
         <br><hr><p>  <button @click='backbtn' class='button'> Back </button> <button @click='deletebtn' class='button'> Delete </button> <button @click='editbtn' class='button'> Edit </button></p>
       </div>
@@ -91,7 +96,6 @@ import { storeFB } from '../../config/firebase'
 import swal from 'sweetalert'
 
 let Inv_data = "";
-let Inv_dataHistory = "";
 export default defineComponent({
   name: "Equipment Profile-component",
 
@@ -99,6 +103,7 @@ export default defineComponent({
    return{
       url_data: null,
       Preview:true,
+      Loading:true,
       inv:[
             {Category:null},
             {DateI:null},
@@ -154,7 +159,8 @@ export default defineComponent({
                       this.showError(error.code)
                     })
                     .finally(() => {
-                      this.Preview = true           
+                      this.Preview = true  
+                      this.Loading = false         
                     });
           
       },
@@ -163,7 +169,6 @@ export default defineComponent({
         let i=0;
         storeFB.collection('inventory').doc(this.url_data).collection('history').orderBy('date', 'asc')
                .get().then(Snapshot => { Snapshot.forEach(doc => {
-                      Inv_dataHistory = doc.data()
                       let dict = { ...doc.data(), id:i+1};
                       this.history.push(dict)
                     })
@@ -184,7 +189,7 @@ export default defineComponent({
       },
 
       deletebtn: function editbtn() {
-          var swal_text = "Equipment : "+ this.Name + ", was deleted successfully"
+          var swal_text = "Equipment : "+ this.inv.Name + ", was deleted successfully"
           var docID = this.url_data
           var d_router=this.$router
           swal({

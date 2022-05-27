@@ -114,7 +114,6 @@ import { storeFB } from '../../config/firebase'
 import 'firebase/compat/auth'
 import { getAuth,updateEmail,onAuthStateChanged   } from "firebase/auth"
 import swal from 'sweetalert'
-import router from "../../config/routes";
 
 let User_data = "";
 const errMsg = ref() 
@@ -293,6 +292,7 @@ export default defineComponent({
 
       DeleteAcc: function DeleteAcc() {
         var user = firebase.auth().currentUser;
+        var d_router=this.$router
         var swal_text = "User : "+ this.Firstname + " "+ this.Lastname +", was deleted successfully"
           swal({
                 title: "Are you sure?",
@@ -305,20 +305,23 @@ export default defineComponent({
                 dangerMode: true,
               }).then(function(isConfirm) {
                 if (isConfirm) {
-                  swal({
-                    title: 'Deleted!',
-                    text: swal_text,
-                    icon: 'success',
-                    dangerMode: true
-                  }).then(function() {
+                    try{ 
                       user.delete().then(function() {
-                        var docRef = storeFB.collection("users").doc(sessionStorage .local_uid)
-                        docRef.delete()
-                        router.push({ path: '/', replace: true })
-                    }).catch(function(error) {
+                        var docRef = storeFB.collection("users").doc(sessionStorage.local_uid)
+                        docRef.delete().then(function(){
+                            swal({
+                                  title: 'Deleted!',
+                                  text: swal_text,
+                                  icon: 'success',
+                                  dangerMode: true
+                              })
+                              d_router.push({ path: '/', replace: true })
+                        })
+
+                    })
+                    }catch(error) {
                       console.log(error)
-                    });
-                  });
+                    };
                 } 
               })
       },
