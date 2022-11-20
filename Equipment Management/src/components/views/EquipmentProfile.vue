@@ -13,21 +13,22 @@
           <p> Category : {{inv.Category}} </p>
           <p> Owner_name : {{inv.Owner_name}} </p>
           <p> State : {{inv.State}} </p>
-          <p> Date : {{inv.DateI}} </p>
+          <p> Created on : {{inv.DateI}} </p>
           <p> Description : {{inv.Description}} </p>
         </div> 
         <hr>
         <div>
           <details>
-          <summary style="cursor: pointer;"><h1 style="cursor: pointer;">History +</h1></summary><br>
+          <summary @click='getDataHistory' style="cursor: pointer;"><h1 style="cursor: pointer;">History +</h1></summary><br>
           <table class="HistoryTable">
-            <tr> <th >#</th><th>Date</th><th>Type</th><th>Created by</th></tr>
-            <tr v-for="(value,index) in history" v-bind:key="history" class="trHistory">
+            <tr> 
+              <th >#</th><th>Date</th><th>Done by</th><th>Action</th>
+            </tr>
+            <tr v-for="(value,index) in history"  class="trHistory" v-bind:key="value">
               <td width="5%">{{ index+1 }}</td>
-              <td >{{ value.date }}</td>
+              <td width="20%">{{ value.date }}</td>
+              <td width="25%">{{ value.createdby }} </td>
               <td width="20%">{{ value.type }}</td>
-
-              <td >{{ value.createdby }} </td>
             </tr>
           </table>
           </details>
@@ -247,6 +248,7 @@ export default defineComponent({
               owner:this.inv.Owner,
               date:this.inv.DateI
             }).then(docRef => {
+              console.log(this.DateH,sessionStorage.local_uid)
                   storeFB.collection('inventory').doc(this.url_data).collection('history').doc().set({
                     date:this.DateH,
                     createdby:sessionStorage.local_uid,

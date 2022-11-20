@@ -23,6 +23,7 @@ import TableEquipment from '../views/TableEquipment.vue'
 const router = useRouter()
 const authListener = firebase.auth().onAuthStateChanged(function(user) {
     if (!user) { 
+
         swal({
             title: "Ooops",
             text: "You must be logged in to view dashboard. Redirecting to Login page",
@@ -30,6 +31,9 @@ const authListener = firebase.auth().onAuthStateChanged(function(user) {
             dangerMode: true
             });
         router.push('/sign-in')
+    }else{
+        const userid = user.uid;
+        sessionStorage .setItem('local_uid', userid);
     }
 });
 
